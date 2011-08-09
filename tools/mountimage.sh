@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: mountimage.sh,v 1.1 2006/11/22 13:20:50 jakob Exp $
 
 BASE=`pwd`
 MOUNTPOINT=/mnt

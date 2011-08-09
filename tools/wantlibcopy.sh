@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: wantlibcopy.sh,v 1.2 2009/11/02 22:24:13 jakob Exp $
 
 SOURCEROOT=$1
 TARGET=$2

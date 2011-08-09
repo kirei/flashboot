@@ -1,5 +1,3 @@
-# $Id: list.recovery,v 1.6 2010/03/17 07:48:35 jakob Exp $
-
 # copy the MAKEDEV script and make some devices
 SCRIPT ${DESTDIR}/dev/MAKEDEV			dev/MAKEDEV
 SPECIAL chmod 700 dev/MAKEDEV

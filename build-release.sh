@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: build-release.sh,v 1.3 2007/09/19 05:13:31 jakob Exp $
 
 set -xe
 

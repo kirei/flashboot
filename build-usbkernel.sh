@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-#
 # Builds a 25Mb Kernel to put on a USB-stick
 
 BASE=`pwd`

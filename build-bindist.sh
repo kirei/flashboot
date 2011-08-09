@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: build-bindist.sh,v 1.5 2007/12/30 10:07:02 jakob Exp $
 
 mkdir bindist
 

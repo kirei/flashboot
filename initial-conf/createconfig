@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: createconfig,v 1.1 2007/06/15 05:24:42 jakob Exp $
 
 ask() {
         local _question=$1 _default=$2

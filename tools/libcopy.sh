@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: libcopy.sh,v 1.3 2009/11/02 22:24:13 jakob Exp $
 
 SOURCEROOT=$1
 TARGET=$2

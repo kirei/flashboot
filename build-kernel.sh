@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: build-kernel.sh,v 1.2 2006/09/03 18:29:56 jakob Exp $
 
 BASE=`pwd`
 SRCDIR=${BSDSRCDIR:-/usr/src}

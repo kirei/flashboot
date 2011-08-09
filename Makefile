@@ -1,5 +1,3 @@
-# $Id: Makefile,v 1.27 2008/06/11 21:34:47 djm Exp $
-
 # Adapted from distrib/i386/common/Makefile.inc:
 #	$OpenBSD: Makefile.inc,v 1.8 2002/09/23 18:31:03 markus Exp $
 

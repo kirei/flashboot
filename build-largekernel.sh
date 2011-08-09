@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# $Id: build-largekernel.sh,v 1.2 2006/10/19 06:40:28 jakob Exp $
-#
 # Builds a 20MB kernel
 
 BASE=`pwd`

@@ -1,5 +1,3 @@
-# $Id: rc.pkg,v 1.3 2008/01/14 12:26:26 jakob Exp $
-#
 # rc.pkg for handling packages
 
 if [ X"${usrlocal_size}" != X"NO" ]; then

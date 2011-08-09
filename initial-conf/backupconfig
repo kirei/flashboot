@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: backupconfig,v 1.4 2009/05/27 19:06:19 stevesk Exp $
 
 echo "Using /etc/backup.conf"
 

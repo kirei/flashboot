@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: build-diskimage.sh,v 1.3 2007/12/19 09:39:47 jakob Exp $
 
 BASE=`pwd`
 SRCDIR=${BSDSRCDIR:-/usr/src}
