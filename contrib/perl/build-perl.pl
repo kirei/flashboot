@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 #
-# $Id: build-perl.pl,v 1.1 2008/01/14 12:34:56 jakob Exp $
-#
 # Build perl-package
 # Jonas Thambert 2008
 

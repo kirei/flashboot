@@ -1,5 +1,3 @@
-# $Id: rc.perl,v 1.1 2008/01/14 12:34:56 jakob Exp $
-
 if [ -e /flash/perl/perl_modules.tgz ]; then
 
 # Create mount if needed
