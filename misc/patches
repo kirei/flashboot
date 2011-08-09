@@ -1,0 +1,286 @@
+Index: ldconfig.8
+===================================================================
+RCS file: /cvs/src/libexec/ld.so/ldconfig/ldconfig.8,v
+retrieving revision 1.17
+diff -u -r1.17 ldconfig.8
+--- ldconfig.8	31 Dec 2005 15:08:22 -0000	1.17
++++ ldconfig.8	24 Jan 2006 17:33:11 -0000
+@@ -38,6 +38,8 @@
+ .Sh SYNOPSIS
+ .Nm ldconfig
+ .Op Fl mRrsUv
++.Op Fl f Ar hints_file
++.Op Fl S Ar strip_path
+ .Op Ar directory Ar ...
+ .Sh DESCRIPTION
+ .Nm
+@@ -91,6 +93,9 @@
+ The following options are recognized by
+ .Nm ldconfig :
+ .Bl -tag -width indent
++.It Fl f Ar hints_file
++Allows the specification of a hints file other than
++.Pa /var/run/ld.so.hints .
+ .It Fl m
+ Merge the result of the scan of the directories given as arguments into
+ the existing hints file.
+@@ -106,6 +111,10 @@
+ .Pa ld.so.hints
+ on the standard output.
+ The hints file will not be modified.
++.It Fl S Ar strip_path
++Remove
++.Pa strip_path
++from the start of library paths in the generated hints file.
+ .It Fl s
+ Do not scan the built-in system directory
+ .Pq Dq /usr/lib
+Index: ldconfig.c
+===================================================================
+RCS file: /cvs/src/libexec/ld.so/ldconfig/ldconfig.c,v
+retrieving revision 1.17
+diff -u -r1.17 ldconfig.c
+--- ldconfig.c	31 Dec 2005 15:08:22 -0000	1.17
++++ ldconfig.c	24 Jan 2006 17:33:11 -0000
+@@ -56,6 +56,12 @@
+ #undef major
+ #undef minor
+ 
++#if DEBUG
++/* test */
++#undef _PATH_LD_HINTS
++#define _PATH_LD_HINTS		"./ld.so.hints"
++#endif
++
+ extern char			*__progname;
+ 
+ static int			verbose;
+@@ -80,22 +86,30 @@
+ static char			*dir_list;
+ 
+ static void	enter(char *, char *, char *, int *, int);
+-static int	dodir(char *, int);
+-static int	buildhints(void);
+-static int	readhints(void);
+-static void	listhints(void);
++static int	dodir(char *, const char *, int);
++static int	buildhints(const char *);
++static int	readhints(const char *);
++static void	listhints(const char *);
+ 
+ int
+ main(int argc, char *argv[])
+ {
+ 	int i, c;
+ 	int rval = 0;
++	char path[PATH_MAX], *strip = NULL;
+ 
+-	while ((c = getopt(argc, argv, "RUmrsv")) != -1) {
++	strlcpy(path, _PATH_LD_HINTS, sizeof(path));
++	while ((c = getopt(argc, argv, "RUmrsvf:S:")) != -1) {
+ 		switch (c) {
++		case 'f':
++			strlcpy(path, optarg, sizeof(path));
++			break;
+ 		case 'R':
+ 			rescan = 1;
+ 			break;
++		case 'S':
++			strip = optarg;
++			break;
+ 		case 'U':
+ 			rescan = unconfig = 1;
+ 			break;
+@@ -113,7 +127,8 @@
+ 			break;
+ 		default:
+ 			fprintf(stderr,
+-			    "usage: %s [-mRrsUv] [dir ...]\n", __progname);
++			    "usage: %s [-mRrsUv] [-f hints_file] ",
++			    "[-S strip_path] [dir ...]\n", __progname);
+ 			exit(1);
+ 			break;
+ 		}
+@@ -126,10 +141,10 @@
+ 	*dir_list = '\0';
+ 
+ 	if (justread || merge || rescan) {
+-		if ((rval = readhints()) != 0)
++		if ((rval = readhints(path)) != 0)
+ 			return rval;
+ 		if (justread) {
+-			listhints();
++			listhints(path);
+ 			return 0;
+ 		}
+ 		add_search_path(dir_list);
+@@ -161,21 +176,24 @@
+ 
+ 		free(dir_list);
+ 		dir_list = cp;
+-		rval |= dodir(search_dirs[i], 0);
++		rval |= dodir(search_dirs[i], strip, 0);
+ 	}
+ 
+-	rval |= buildhints();
++	rval |= buildhints(path);
+ 
+ 	return rval;
+ }
+ 
+ int
+-dodir(char *dir, int silent)
++dodir(char *dir, const char *strip, int silent)
+ {
+ 	DIR		*dd;
+ 	struct dirent	*dp;
+ 	char		name[MAXPATHLEN];
+-	int		dewey[MAXDEWEY], ndewey;
++	int		dewey[MAXDEWEY], ndewey, doff = 0;
++
++	if (strip != NULL && strncmp(dir, strip, strlen(strip)) == 0)
++		doff = strlen(strip);
+ 
+ 	if ((dd = opendir(dir)) == NULL) {
+ 		if (!silent || errno != ENOENT)
+@@ -216,7 +234,7 @@
+ 
+ 		bzero((caddr_t)dewey, sizeof(dewey));
+ 		ndewey = getdewey(dewey, cp + 4);
+-		enter(dir, dp->d_name, name, dewey, ndewey);
++		enter(dir + doff, dp->d_name, name, dewey, ndewey);
+ 	}
+ 	return 0;
+ }
+@@ -268,13 +286,6 @@
+ 	shlib_tail = &shp->next;
+ }
+ 
+-
+-#if DEBUG
+-/* test */
+-#undef _PATH_LD_HINTS
+-#define _PATH_LD_HINTS		"./ld.so.hints"
+-#endif
+-
+ static int
+ hinthash(char *cp, int vmajor, int vminor)
+ {
+@@ -292,7 +303,7 @@
+ }
+ 
+ int
+-buildhints(void)
++buildhints(const char *path)
+ {
+ 	int strtab_sz = 0, nhints = 0, fd, i, n, str_index = 0;
+ 	struct hints_bucket *blist;
+@@ -378,7 +389,7 @@
+ 		errx(1, "str_index(%d) != strtab_sz(%d)", str_index, strtab_sz);
+ 	}
+ 
+-	tmpfile = concat(_PATH_LD_HINTS, ".XXXXXXXXXX", "");
++	tmpfile = concat(path, ".XXXXXXXXXX", "");
+ 	if ((fd = mkstemp(tmpfile)) == -1) {
+ 		warn("%s", tmpfile);
+ 		return -1;
+@@ -387,31 +398,31 @@
+ 
+ 	if (write(fd, &hdr, sizeof(struct hints_header)) !=
+ 	    sizeof(struct hints_header)) {
+-		warn("%s", _PATH_LD_HINTS);
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 	if (write(fd, blist, hdr.hh_nbucket * sizeof(struct hints_bucket)) !=
+ 	    hdr.hh_nbucket * sizeof(struct hints_bucket)) {
+-		warn("%s", _PATH_LD_HINTS);
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 	if (write(fd, strtab, strtab_sz) != strtab_sz) {
+-		warn("%s", _PATH_LD_HINTS);
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 	if (close(fd) != 0) {
+-		warn("%s", _PATH_LD_HINTS);
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 
+ 	/* Install it */
+-	if (unlink(_PATH_LD_HINTS) != 0 && errno != ENOENT) {
+-		warn("%s", _PATH_LD_HINTS);
++	if (unlink(path) != 0 && errno != ENOENT) {
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 
+-	if (rename(tmpfile, _PATH_LD_HINTS) != 0) {
+-		warn("%s", _PATH_LD_HINTS);
++	if (rename(tmpfile, path) != 0) {
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 
+@@ -419,7 +430,7 @@
+ }
+ 
+ static int
+-readhints(void)
++readhints(const char *path)
+ {
+ 	struct stat sb;
+ 	struct hints_bucket *blist;
+@@ -430,8 +441,8 @@
+ 	long msize;
+ 	int fd, i;
+ 
+-	if ((fd = open(_PATH_LD_HINTS, O_RDONLY, 0)) == -1) {
+-		warn("%s", _PATH_LD_HINTS);
++	if ((fd = open(path, O_RDONLY, 0)) == -1) {
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 	if (fstat(fd, &sb) != 0 || !S_ISREG(sb.st_mode) ||
+@@ -444,20 +455,20 @@
+ 	addr = mmap(0, msize, PROT_READ, MAP_PRIVATE, fd, 0);
+ 
+ 	if (addr == MAP_FAILED) {
+-		warn("%s", _PATH_LD_HINTS);
++		warn("%s", path);
+ 		return -1;
+ 	}
+ 
+ 	hdr = (struct hints_header *)addr;
+ 	if (HH_BADMAG(*hdr)) {
+ 		warnx("%s: Bad magic: %lo",
+-		    _PATH_LD_HINTS, hdr->hh_magic);
++		    path, hdr->hh_magic);
+ 		return -1;
+ 	}
+ 
+ 	if (hdr->hh_ehints > msize) {
+ 		warnx("%s: hintsize greater than filesize: 0x%x > 0x%x ",
+-		    _PATH_LD_HINTS, hdr->hh_ehints, msize);
++		    path, hdr->hh_ehints, msize);
+ 		    return -1;
+ 	}
+ 
+@@ -504,12 +515,12 @@
+ }
+ 
+ static void
+-listhints(void)
++listhints(const char *path)
+ {
+ 	struct shlib_list *shp;
+ 	int i;
+ 
+-	printf("%s:\n", _PATH_LD_HINTS);
++	printf("%s:\n", path);
+ 	printf("\tsearch directories: %s\n", dir_list);
+ 
+ 	for (i = 0, shp = shlib_head; shp; i++, shp = shp->next)
+

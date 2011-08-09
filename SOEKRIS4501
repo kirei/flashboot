@@ -1,0 +1,158 @@
+#	$OpenBSD: GENERIC,v 1.406 2004/07/20 20:30:09 dhartmei Exp $
+#	$OpenBSD: GENERIC,v 1.509 2006/07/02 02:05:11 deraadt Exp $
+
+machine		i386		# architecture, used by config; REQUIRED
+
+option		DDB		# in-kernel debugger
+#option		DDB_SAFE_CONSOLE # allow break into ddb during boot
+#makeoptions	DEBUG="-g"	# compile full symbol table
+#makeoptions	PROF="-pg"	# build profiled kernel
+#option		GPROF		# kernel profiling, kgmon(8)
+option		DIAGNOSTIC	# internal consistency checks
+option		KTRACE		# system call tracing, a la ktrace(1)
+#option		ACCOUNTING	# acct(2) process accounting
+option		KMEMSTATS	# collect malloc(9) statistics
+option		PTRACE		# ptrace(2) system call
+
+option		CRYPTO		# Cryptographic framework
+
+option		SYSVMSG		# System V-like message queues
+option		SYSVSEM		# System V-like semaphores
+option		SYSVSHM		# System V-like memory sharing
+
+option		FFS		# UFS
+option		MFS		# memory file system
+
+option		TCP_SACK	# Selective Acknowledgements for TCP
+option		TCP_ECN		# Explicit Congestion Notification for TCP
+#option		TCP_FACK	# Forward Acknowledgements for TCP
+option		TCP_SIGNATURE	# TCP MD5 Signatures, for BGP routing sessions
+
+option		FDESC		# /dev/fd
+option		FIFO		# FIFOs; RECOMMENDED
+
+option		GATEWAY		# packet forwarding
+option		INET		# IP + ICMP + TCP + UDP
+option		ALTQ		# ALTQ base
+option		INET6		# IPv6 (needs INET)
+option		IPSEC		# IPsec
+option		PPP_BSDCOMP	# PPP BSD compression
+option		PPP_DEFLATE
+option		MROUTING	# Multicast router
+option		PIM		# Protocol Independent Multicast
+
+pseudo-device	pf		# packet filter
+pseudo-device	pflog		# pf log if
+pseudo-device	pfsync		# pf sync if
+pseudo-device	pflow		# pflow export if
+pseudo-device	enc	1	# option IPSEC needs the encapsulation interface
+
+pseudo-device	pty	16	# pseudo-terminals
+pseudo-device	systrace 1	# system call tracing device
+
+# clonable devices
+pseudo-device	 bpfilter	# packet filter
+pseudo-device	 bridge		# network bridging support
+pseudo-device	 carp		# CARP protocol support
+pseudo-device	 gif		# IPv[46] over IPv[46] tunnel (RFC1933)
+pseudo-device	 gre		# GRE encapsulation interface
+pseudo-device	 loop		# network loopback
+#pseudo-device	 ppp		# PPP
+#pseudo-device	 sl		# CSLIP
+pseudo-device	 tun		# network tunneling over tty
+pseudo-device	 vlan		# IEEE 802.1Q VLAN
+pseudo-device	 trunk		# Trunking support
+
+# for IPv6
+#pseudo-device	faith	1	# IPv[46] tcp relay translation i/f
+
+pseudo-device	pppoe	1	# PPP over Ethernet (RFC 2516)
+
+option		BOOT_CONFIG	# add support for boot -c
+
+########################################################################
+option		I486_CPU
+option		I586_CPU
+
+option		USER_PCICONF	# user-space PCI configuration
+
+option		DUMMY_NOPS	# speed hack; recommended
+
+maxusers	32		# estimated number of users
+
+option          RAMDISK_HOOKS
+#option		MINIROOTSIZE=16384		# disktab.8mb
+#option		MINIROOTSIZE=19456		# disktab.9.5mb
+#option		MINIROOTSIZE=20480		# disktab.10mb
+option		MINIROOTSIZE=30720		# disktab.12mb
+option		NKPTP=8 # Needed when kernel+ramdisk > 16Mb
+config          bsd     root on rd0a swap on rd0b and wd0b and wd1b
+pseudo-device   rd              1
+
+# Whacky timer
+option		TIMER_FREQ=1189161
+
+# No swap, so crank this down
+option		BUFCACHEPERCENT=1
+
+mainbus0 at root
+
+cpu0	at mainbus?
+bios0	at mainbus0
+apm0	at bios0 flags 0x0000	# flags 0x0101 to force protocol version 1.1
+pcibios0 at bios0 flags 0x0000	# use 0x30 for a total verbose
+
+isa0	at mainbus0
+isa0	at pcib?
+pci*	at mainbus0
+
+option		PCIVERBOSE
+option		EISAVERBOSE
+
+pchb*	at pci?			# PCI-Host bridges
+pci*	at pchb?
+pcib*	at pci?			# PCI-ISA bridge
+ppb*	at pci? 		# PCI-PCI bridges
+pci*	at ppb? bus ?
+
+# power management and other environmental stuff
+elansc*	at pci?			# AMD Elan SC520 System Controller
+gpio*	at elansc?
+
+npx0	at isa? port 0xf0 irq 13	# math coprocessor
+
+option	WSDISPLAY_COMPAT_USL		# VT handling
+option	WSDISPLAY_COMPAT_RAWKBD		# can get raw scancodes
+option	WSDISPLAY_DEFAULTSCREENS=6
+option	WSDISPLAY_COMPAT_PCVT		# emulate some ioctls
+
+pckbc0		at isa?			# PC keyboard controller
+pckbd*		at pckbc?		# PC keyboard
+#pms*		at pckbc?		# PS/2 mouse for wsmouse
+vga*		at pci?
+wsdisplay*	at vga? console ?
+wskbd*		at pckbd? mux 1
+
+com0	at isa? port 0x3f8 irq 4	# standard PC serial ports
+com1	at isa? port 0x2f8 irq 3
+
+wdc0	at isa? port 0x1f0 irq 14 flags 0x00
+wd*	at wdc? channel ? drive ? flags 0x0000
+
+sis*	at pci?					# SiS 900/7016 ethernet
+nsphyter*	at mii?				# NS and compatible PHYs
+
+# Wireless network cards
+ath*	at pci?				# Atheros AR5k (802.11a/b/g)
+wi*	at pci?				# WaveLAN IEEE 802.11DS
+ral*	at pci?				# Ralink RT2500
+ipw*	at pci?				# Intel PRO/Wireless 2100
+iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
+
+# crypto support
+hifn*	at pci?			# Hi/fn 7751 crypto card
+
+pseudo-device	bio		1	# ioctl multiplexing device
+pseudo-device	wsmux		2
+pseudo-device	crypto		1
+pseudo-device	hotplug		1	# devices hot plugging

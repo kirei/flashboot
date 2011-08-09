@@ -1,0 +1,381 @@
+# $Id: rc.initial,v 1.46 2009/11/02 22:21:03 jakob Exp $
+#
+# Minimal rc file for flashboot
+
+#set -x
+
+# Strip comments (and leading/trailing whitespace if IFS is set)
+# from a file and spew to stdout
+stripcom() {
+	local _file="$1"
+	local _line
+
+	{
+		while read _line ; do
+			_line=${_line%%#*}              # strip comments
+			test -z "$_line" && continue
+			echo $_line
+		done
+	} < $_file
+}
+
+fill_baddynamic()
+{
+	local _service="$1"
+	local _sysctl="net.inet.${_service}.baddynamic"
+	local _name _port _srv _junk _ban
+	local _i=0
+	grep "/${_service}" /etc/services | {
+		IFS=" 	/"
+		while read _name _port _srv _junk; do
+			[ "x${_srv}" = "x${_service}" ] || continue;
+			if [ "x${_ban}" = "x" ]; then
+				_ban="+${_port}"
+			else
+				_ban="${_ban},+${_port}"
+			fi
+			# Flush before argv gets too long
+			if [ $((++_i)) -gt 128 ]; then
+				sysctl ${_sysctl}=${_ban} >/dev/null
+				_ban=""
+				_i=0
+			fi
+		done;
+		if [ "x${_ban}" != "x" ]; then
+			sysctl ${_sysctl}=${_ban} >/dev/null
+		fi
+	}
+}
+
+# End subroutines
+
+. /etc/rc.conf
+
+cd /
+
+if [ ! -z "$_MINIRC_DONE" ] ; then
+	echo "Attempted to reenter mini /etc/rc"
+	exit 1
+fi
+
+stty status '^T'
+# Set shell to ignore SIGINT (2), but not children;
+# shell catches SIGQUIT (3) and returns to single user after fsck.
+trap : 2
+trap : 3	# shouldn't be needed
+
+HOME=/; export HOME
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
+
+if [ X"$1" = X"shutdown" ]; then
+	# bring carp interfaces down gracefully
+	ifconfig -a|grep '^carp.*:'|cut -f1 -d:|while read if
+	do
+		ifconfig $if down
+	done
+	echo "Shutting down"
+	exit 2
+fi
+
+echo "********* flashboot"
+
+trap "echo 'Boot interrupted.'; exit 1" 3
+
+umount -a >/dev/null 2>&1
+
+if ! mount -uw / ; then
+	echo "Remount / failed"
+	exit 1
+fi
+
+# Do not check filesystems if we are booting from cd.
+if ! grep /cd /etc/fstab ; then
+	if ! fsck -p ; then
+	    echo "fsck failed"
+	    exit 1
+	fi
+fi
+
+if ! fsck -p ; then
+	echo "fsck failed"
+	exit 1
+fi
+
+if [ X"${initial_config}" = X"YES" ] ; then
+	echo "Running createconfig";	createconfig
+fi
+
+# Mount /flash rw for now so we can write later if needed;
+# will remount with fstab settings at the end.
+if mount -o rw,sync,noatime /flash >/dev/null 2>&1 ; then
+	for x in /flash/*.tgz ; do 
+		if [ -r $x ]; then
+			echo -n "Unpacking tarball ${x} from flash... "
+			if ! tar zxpf $x ; then
+				exit 1
+			fi
+			echo "done"
+		fi
+	done
+	
+	echo "Copying additional configuration files from flash to ramdisk"
+	if [ -d /flash/conf ] ; then 
+		cd /flash/conf
+		for x in * ; do
+			[ -r $x ] && cp -Rp $x /
+		done
+		cd /
+	else
+		echo "WARNING: /flash/conf/ not found"
+	fi
+else
+	echo "ERROR: No flash device found, using default config"
+fi
+
+echo 'setting tty flags'
+ttyflags -a
+
+if [ -f /etc/rc.init ] ; then
+	echo "********* executing /etc/rc.init"
+	. /etc/rc.init
+	echo "********* finished /etc/rc.init"
+fi
+
+# Rebuild password files
+pwd_mkdb /etc/master.passwd
+
+# Re-source config - a new one has probably been loaded from flash
+. /etc/rc.conf
+
+chmod 666 /dev/tty[pqrstuvwxyzPQRST]*
+chown root:wheel /dev/tty[pqrstuvwxyzPQRST]*
+
+# build ps databases
+echo -n 'building ps databases:'
+echo -n " dev"
+dev_mkdb
+echo "."
+
+touch /var/run/utmp
+
+if [ -f /etc/sysctl.conf ]; then
+(
+	# delete comments and blank lines
+	set -- `stripcom /etc/sysctl.conf`
+	while [ $# -ge 1 ] ; do
+		sysctl -w $1
+		shift
+	done
+)
+fi
+
+if [ X"${pf}" != X"NO" ]; then
+	RULES="block all"
+	RULES="$RULES\npass on lo0"
+	RULES="$RULES\npass in proto tcp from any to any port 22 keep state"
+	RULES="$RULES\npass out proto { tcp, udp } from any to any port 53 keep state"
+	RULES="$RULES\npass out inet proto icmp all icmp-type echoreq keep state"
+	if ifconfig lo0 inet6 >/dev/null 2>&1; then
+		RULES="$RULES\npass out inet6 proto icmp6 all icmp6-type neighbrsol"
+		RULES="$RULES\npass in inet6 proto icmp6 all icmp6-type neighbradv"
+		RULES="$RULES\npass out inet6 proto icmp6 all icmp6-type routersol"
+		RULES="$RULES\npass in inet6 proto icmp6 all icmp6-type routeradv"
+	fi
+	RULES="$RULES\npass proto carp keep state (no-sync)"
+	echo $RULES | pfctl -f - -e
+fi
+
+# Fill net.inet.(tcp|udp).baddynamic lists from /etc/services
+fill_baddynamic udp
+fill_baddynamic tcp
+
+echo 'starting network'
+ifconfig -g carp carpdemote 128
+. /etc/netstart
+
+if [ X"${pf}" != X"NO" ]; then
+	if [ -f /etc/pf.conf ]; then
+		pfctl -f /etc/pf.conf
+	fi
+	# bring up pfsync after the working ruleset has been loaded
+	if [ -f /etc/hostname.pfsync0 ]; then
+		. /etc/netstart pfsync0
+	fi
+fi
+
+echo -n "Daemons: "
+
+rm -f /dev/log
+
+echo 'starting system logger'
+rm -f /dev/log
+if [ X"${named_flags}" != X"NO" ]; then
+	rm -f /var/named/dev/log
+	syslogd_flags="${syslogd_flags} -a /var/named/dev/log"
+fi
+if [ -d /var/empty ]; then
+	rm -f /var/empty/dev/log
+	mkdir -p -m 0555 /var/empty/dev
+	syslogd_flags="${syslogd_flags} -a /var/empty/dev/log"
+fi
+syslogd ${syslogd_flags}
+
+if ifconfig lo0 inet6 >/dev/null 2>&1; then
+	fw=`sysctl -n net.inet6.ip6.forwarding`
+	if [ "X${fw}" == X"0" ]; then
+		# $rtsold_flags is imported from /etc/rc.conf;
+		# If $rtsold_flags == NO, then rtsold isn't run.
+		if [ "X${rtsold_flags}" != X"NO" ]; then
+			echo -n ' rtsold'
+			/usr/sbin/rtsold ${rtsold_flags}
+		fi
+	else
+		# $route6d_flags is imported from /etc/rc.conf;
+		# If $route6d_flags == NO, then route6d isn't run.
+		if [ "X${route6d_flags}" != X"NO" ]; then
+			echo -n ' route6d'
+			/usr/sbin/route6d ${route6d_flags}
+		fi
+		# $rtadvd_flags is imported from /etc/rc.conf;
+		# If $rtadvd_flags == NO, then rtadvd isn't run.
+		if [ "X${rtadvd_flags}" != X"NO" ]; then
+			echo -n ' rtadvd'
+			/usr/sbin/rtadvd ${rtadvd_flags}
+		fi
+	fi
+fi
+
+if [ X"${hostapd_flags}" != X"NO" ]; then
+	echo -n ' hostapd';	/usr/sbin/hostapd ${hostapd_flags}
+fi
+
+if [ X"${dhcpd_flags}" != X"NO" -a -f /etc/dhcpd.conf ]; then
+	touch /var/db/dhcpd.leases
+	echo -n ' dhcpd';	/usr/sbin/dhcpd ${dhcpd_flags}
+fi
+
+if [ X"${spamd_flags}" != X"NO" ]; then
+	echo -n ' spamd';	eval /usr/libexec/spamd ${spamd_flags}
+	/usr/libexec/spamd-setup -D
+fi
+
+if [ X"${ftpproxy_flags}" != X"NO" ]; then
+	echo -n ' ftp-proxy';		/usr/sbin/ftp-proxy ${ftpproxy_flags}
+fi
+
+if [ X"${identd_flags}" != X"NO" ]; then
+	echo -n ' identd';	/usr/libexec/identd ${identd_flags}
+fi
+
+if [ X"${inetd}" != X"NO" -a -e /etc/inetd.conf ]; then
+	echo -n ' inetd';	inetd
+fi
+
+if [ X"${ospfd_flags}" != X"NO" -a -e /etc/ospfd.conf ]; then
+	echo -n ' ospfd';	ospfd ${ospfd_flags}
+fi
+
+if [ X"${bgpd_flags}" != X"NO" -a -e /etc/bgpd.conf ]; then
+	echo -n ' bgpd';	bgpd ${bgpd_flags}
+fi
+
+if [ X"${named_flags}" != X"NO" ]; then
+	if [ ! -f /etc/rndc.key -a -x /usr/sbin/rndc-confgen ]; then
+		echo -n "rndc-confgen: generating new shared secret... "
+		mkdir -p /flash/conf/etc 2>/dev/null
+		rndckey=/flash/conf/etc/rndc.key
+		if /usr/sbin/rndc-confgen -a -c $rndckey; then
+			cp -p $rndckey /etc/rndc.key
+			echo done.
+		else
+			echo failed.
+		fi
+	fi
+	if [ -f /etc/rndc.key ]; then
+		cp -p /etc/rndc.key /var/named/etc/rndc.key
+		chown root:named /var/named/etc/rndc.key
+		chmod 0640 /var/named/etc/rndc.key
+	fi
+
+	echo -n ' named';	named $named_flags
+fi
+
+if [ X"${sasyncd_flags}" != X"NO" ]; then
+	echo 'starting sasyncd';	sasyncd ${sasyncd_flags}
+fi
+
+if [ X"${isakmpd_flags}" != X"NO" ]; then
+	echo -n ' isakmpd';	isakmpd ${isakmpd_flags}
+fi
+
+if [ X"${ipsec}" != X"NO" -a -f /etc/ipsec.conf ]; then
+	ipsecctl -f /etc/ipsec.conf
+fi
+
+if [ X"${ldattach_flags}" != X"NO" -a -n "${ldattach_flags}" ]; then
+	echo -n ' ldattach'; ldattach ${ldattach_flags}
+fi
+
+if [ X"${ntpd_flags}" != X"NO" ]; then
+	echo -n ' ntpd'; ntpd $ntpd_flags
+fi
+
+if [ X"${sshd_flags}" != X"NO" ]; then
+	if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
+		echo -n "ssh-keygen: generating new RSA host key... "
+		mkdir -p /flash/conf/etc/ssh 2>/dev/null
+		hostkey=/flash/conf/etc/ssh/ssh_host_rsa_key
+		if /usr/bin/ssh-keygen -q -t rsa -f $hostkey -N ''; then
+			cp -p $hostkey $hostkey.pub /etc/ssh
+			echo done.
+		else
+			echo failed.
+		fi
+	fi
+	echo -n ' sshd';	/usr/sbin/sshd ${sshd_flags};
+fi
+
+if [ X"${snmpd_flags}" != X"NO" -a -e /etc/snmpd.conf ]; then
+	echo -n ' snmpd';	/usr/sbin/snmpd ${snmpd_flags}
+fi
+
+if [ X"${portmap}" = X"YES" ]; then
+	echo -n ' portmap';		portmap
+fi
+
+if [ X"${rarpd_flags}" != X"NO" -a -s /etc/ethers ]; then
+	echo -n ' rarpd';		rarpd ${rarpd_flags}
+fi
+
+if [ X"${bootparamd_flags}" != X"NO" -a -s /etc/bootparams ]; then
+	echo -n ' rpc.bootparamd';	rpc.bootparamd ${bootparamd_flags}
+fi
+
+if [ X"${watchdogd_flags}" != X"NO" ]; then
+	echo -n ' watchdogd';		watchdogd $watchdogd_flags
+fi
+
+echo -n ' cron';		cron
+
+# disable carp interlock
+ifconfig -g carp -carpdemote 128
+
+echo "."
+
+if [ -f /etc/rc.pkg ] ; then
+	echo "********* executing /etc/rc.pkg"
+	. /etc/rc.pkg
+	echo "********* finished /etc/rc.pkg"
+fi
+
+if [ -f /etc/rc.more ] ; then
+	echo "********* executing /etc/rc.more"
+	. /etc/rc.more
+	echo "********* finished /etc/rc.more"
+fi
+
+# Remount filesystems with fstab settings
+umount /flash >/dev/null 2>&1 && mount -A 
+
+echo "********* finished /etc/rc"

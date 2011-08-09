@@ -1,0 +1,31 @@
+# $Id: rc.pkg,v 1.3 2008/01/14 12:26:26 jakob Exp $
+#
+# rc.pkg for handling packages
+
+if [ X"${usrlocal_size}" != X"NO" ]; then
+	echo "Creating /usr/local filesystem..."
+	mkdir -p /usr/local
+	if ! mount_mfs -s ${usrlocal_size} swap /usr/local ; then
+		echo "Mount /usr/local failed"
+		exit 1
+	fi
+
+	echo "Unpacking packages..."
+	cd /usr/local
+	for pkg in /flash/pkg/*.tgz ; do
+		if [ -r $pkg ]; then
+			echo -n "Unpacking package ${pkg} from flash... "
+			cpio -idz -H tar -f \
+				"share/examples/*" \
+				"share/doc/*" \
+				"include/*" \
+				"man/*" \
+				"+*" \
+				< $pkg 2>/dev/null
+			echo "done"
+		fi
+	done
+        if [ -d /usr/local/lib ]; then 
+		/sbin/ldconfig /usr/local/lib
+	fi
+fi

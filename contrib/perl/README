@@ -1,0 +1,23 @@
+$Id: README,v 1.1 2008/01/14 12:34:56 jakob Exp $
+
+Add support for Perl
+--------------------
+
+To be able to use Perl you need to create a 40Mb+ large ramdisk
+in initial-conf/rc.conf. Modify, build and install a new kernel on your
+flashboot device, then execute the build-script.
+
+    # perl build-perl.pl 
+
+Copy perl.tgz to your medias /pkg folder and perl_modules.tgz to your 
+medias /perl folder. Also copy rc.perl to /conf/etc and include the
+following in your rc.more.
+
+
+-- cut --
+if [ -f /etc/rc.perl ] ; then
+	echo "********* executing /etc/rc.perl"
+	. /etc/rc.perl
+	echo "********* finished /etc/rc.perl"
+fi
+-- cut --

@@ -1,0 +1,37 @@
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/games
+export PATH HOME
+umask 022
+
+HISTFILE=~/.ksh_history
+HISTSIZE=1024
+export HISTFILE HISTSIZE
+
+if [ -x /usr/bin/tset ]; then
+	eval `/usr/bin/tset -sQ \?$TERM`
+fi
+export TERM
+
+USER=`id -un 2>/dev/null`
+case `id -u` in
+	0) PS1S='# ';;
+esac
+PS1S=${PS1S:-'$ '}
+HOSTNAME=${HOSTNAME:-`uname -n`}
+HOST=${HOSTNAME%%.*}
+PPROMPT='[$USER@$HOST `basename $PWD`]'"$PS1S"
+C033=`printf '\033'`
+C007=`printf '\007'`
+C015=`printf '\015'`
+case $TERM in
+xterm*)
+	TITLEHACK='$C033]0;${USER}@${HOSTNAME}: ${PWD}$C007$C015'
+	bind "^[[H=beginning-of-line"
+	bind "^[[F=end-of-line"
+	;;
+*)
+	TITLEHACK=
+	;;
+esac
+
+PS1=$TITLEHACK$PPROMPT
+

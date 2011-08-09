@@ -1,0 +1,474 @@
+20100317
+ - (jakob) remove brconfig(8), now included in ifconfig(8)
+
+20100223
+ - (niclas) update build-livecd.sh to automatically use correct OpenBSD version
+ - (niclas) Removed "agp* at pchb?" from PCENGINES config
+ - (niclas) Removed "option PORTAL" from PCENGINES config
+
+20100107
+ - (jakob) sh-ify scripts; from Yannick
+
+20091102
+ - (jakob) use new scrub syntax; from Yannick
+ - (jakob) prepare /etc/rc for 4.6; from Yannick
+ - (jakob) add new script to copy dynamic libs based on a WANTLIB list; from Yannick
+
+20091022
+ - (jakob) update list.largekernel for OpenBSD 4.6; from Yannick
+
+20090527
+ - (stevesk) test /flash/conf to check if /flash is mounted in backupconfig.
+	     Niclas Rosell concurs.
+
+20090520
+ - (stevesk) sync ntpd startup to match OpenBSD
+ - (stevesk) sync dhcpd startup to match OpenBSD (which deprecates
+   /etc/dhcpd.interfaces).  remove redundant touch /var/db/dhcpd.leases.
+ - (stevesk) backupconfig: use 'backed up' vs. 'backuped'.
+
+20090516
+ - (jakob) fix livecd build script; from Yannick
+ - (jakob) sync spamd startup
+
+20090513
+ - (stevesk) add support for ldattach; commented out in list
+
+20090506
+ - (jakob) Add the fill_baddynamic to /etc/rc (was in 4.4); from Yannick
+ - (jakob) Enable pfsync only once a complete rule set is installed (was in 4.3); from Yannick
+ - (jakob) Add carpdemote while services are started in rc (was in 4.0); from Yannick
+ - (jakob) Add proper carp shutdown (was in 4.2); from Yannick
+ - (jakob) Some test(1) consistency in /etc/rc (was in 3.8); from Yannick
+ - (jakob) sync kernel config for SOEKRIS5501; from Yannick
+ - (jakob) enable pflow; from Yannick
+
+20090504
+ - (jakob) update list.largekernel for OpenBSD 4.5; from Yannick
+
+20090210
+ - (jakob) add snmpd; from Yannick Gravel
+
+20081103
+ - (jakob) fixes for list.largekernel; from Yannick Gravel
+
+20081022
+ - (jakob) add /usr/bin/stat (needed by netstart); from Yannick Gravel
+ - (jakob) source rc.conf.local; from Yannick Gravel
+
+20080927
+ - (stevesk) add Ralink RT2860 firmware (commented out)
+
+20080820
+ - (stevesk) switch pccom to com
+
+20080611
+ - (djm) Add xterm-xfree86 terminal type
+
+20080531
+ - (jakob) enable SOEKRIS5501
+ - (niclas) GENERIC-RD: move acpi0 from mainbus to bios, follow change in 4.3.
+
+20080414
+ - (stevesk) SOEKRIS5501: uncomment glxpcib(4) as 4.3 is tagged
+
+20080404
+ - (stevesk) root.hints in list also
+
+20080402
+ - (jakob) simplify initial pf.conf
+
+20080208
+ - (jakob) set tty flags
+ - (jakob) root.hints moved
+ - (jakob) bump libpthread
+
+20080114
+ - (jakob) add support for building a kernel for USB flash devices,
+   contributed by Jonas Thambert.
+ - (jakob) add optional framework for adding perl (located in contrib/perl).
+   contributed by Jonas Thambert.
+
+20071230
+ - (jakob) add PCENGINES kernel config from Rolf Sommerhalder
+ - (stevesk) SOEKRIS5501: remove some unneeded
+ - (stevesk) SOEKRIS5501: add glxpcib(4) but leave commented as this is
+   in currrent only right now
+
+20071218
+ - (rickard) sync with stable 4.2
+
+20070928
+ - (stevesk) add kernel config for Soekris net4521 (SOEKRIS4521)
+
+20070919
+ - (jakob) add MAKECONF to sudo environment
+ - (niclas) add bootable CD configuration
+
+20070818
+ - (aanriot) Include mg(1)
+ - (djm) Typo in list file, from Alexandre Anriot
+ - (djm) Add re (Realtek ethernet) and rgephy to Commell kernel
+
+20070817
+ - (rickard) Removed noauto in fstab, Niclas change to /etc/rc earlier 
+    broke the final /flash/-mounting. (The comments where wrong anyway)
+ - (rickard) Moved flashboot.mtree to /etc/ instead of /root/
+ - (rickard) Flashboot.mtree now refreshed after adding list.largekernel
+ - (rickard) Added mtree to list since it is needed in all kernels.
+ - (rickard) Made backupconfig print changed files.
+ - (rickard) Backupconfig now ignores mtree-files.
+
+20070712
+ - (niclas) Change variable "config" to "initial_config" in rc.conf
+ - (niclas) Fix compatibility with older versions of rc.conf.
+   If initial_config variable did not exist in rc.conf the system
+   would not boot properly.
+
+20070711
+ - (stevesk) initial-conf/rc.initial: test for /usr/sbin/rndc-confgen in
+   the if list that uses it; fix named not starting when no rndc-confgen
+
+20070621
+ - (niclas) fix chmod for {backup,create}config
+ - (stevesk) add hostname.vr0 to list for net5501
+
+20070620
+ - (stevesk) add kernel config for Soekris net5501 (SOEKRIS5501)
+
+20070615
+ - (niclas) do mount -A at end of rc.initial
+ - (niclas) Create mtree of ramdisk at end of list
+ - (niclas) Add createconfig (install/config script)
+ - (niclas) Add backupconfig (backup config to USB or flash)
+ - (niclas) Add backup.conf (config for backupconfig)
+ - (niclas) Run createconfig from rc.initial unless config=NO in rc.conf
+
+20070613
+ - (niclas) Add kbd to list.largekernel
+
+20070531
+ - (niclas) add mount_msdos to list.largekernel
+
+20070529
+ - (rickard) sync with OpenBSD 4.1
+
+20070415
+ - (stevesk) Add dhcrelay
+ - (stevesk) Add /dev/ttyU{0,1}
+ - (stevesk) Check for rndc-confgen
+
+20070415
+ - (stevesk) Fix typos in rc.initial (osfpd)
+
+20070206
+ - (rickard) Added hifn to WRAP12. Requested by Alexander Marx.
+ - (rickard) Added ldd, libkvm, libwrap and libpthread to largekernel.
+ - (rickard) Added ttyspeed configuration
+ - (rickard) Add bindist build script
+
+20061122
+ - (jakob) add prototype boot.conf
+ - (jakob) add scripts for building and mounting disk images; from Rickard
+
+20061020
+ - (djm) Adjust README: we extract all of /flash/*.tgz, not just
+   /flash/conf.tgz; reported by Jacob Winther <jacob.winther AT gmail.com>
+
+20061019
+ - (jakob) Decrease largekernel to 20MB; from Rickard
+
+20060929
+ - (stevesk) Typo in README
+
+20060916
+ - (jakob) Normalize test cases for rc.initial; from Massimo Lusetti
+
+20060904
+ - (jakob) Add simple package extraction framework from Rickard
+ - (jakob) More README from Rickard
+
+20060903
+ - (jakob) Create rndc.key if needed
+ - (jakob) Add 20MB and 25MB disktabs
+ - (jakob) More SUDO tweeks
+ - (jakob) Large (25MB) kernel build script and list from Rickard
+
+20060831
+ - (jakob) Add sasyncd(8)
+ - (jakob) Add rw/ro scripts (for easy flash remounting) from Rickard
+
+20060830
+ - (jakob) Add watchdogd(8)
+ - (jakob) Fix ipsecctl startup
+ - (jakob) Add hostapd and ospfd to startup
+
+20060826
+ - (jakob) Add ral(4) firmware to list (commented out)
+ - (jakob) Do not require rc.{init,more} to be executable
+ - (jakob) New build scripts from Rickard Dahlstrand
+
+20060813
+ - (djm) Add uplcom(4) to SOEKRIS4801 and WRAP12 configs. Requested by
+   stevesk@
+
+20060709
+ - (djm) Sync kernel configs, prompted by Massimo Lusetti
+
+20060614
+ - (djm) Remove ipsecadm and spppcontrol, add tcpdrop, rdate and rtsold
+
+20060516
+ - (djm) Make misc/build.sh honour $BSDSRCDIR, $BSDOBJDIR, $DESTDIR
+   and $RELEASEDIR; patch from jakob@
+ - (djm) Add /etc/firmware to mtree.conf and commented out firmwares
+   to packing list; patch from jakob@
+ - (djm) -current, not -stable firmware; from jakob@
+ - (djm) Support builds using SUDO; from jakob@
+ - (djm) Actually comment out the firmwares; spotted by jakob@
+ - (djm) Remove traces of legacy isakmpd.dynamic
+ - (djm) Fix /etc built from misc/build.sh; from jakob@
+
+20060511
+ - (djm) Add ipw(4) and iwi(4) at request of jakob@
+
+20060505
+ - (djm) Start ipsecctl if we are asked to and ipsec.conf exists
+
+20060329
+ - (djm) Match default WRAP console speed in WRAP12 kernel config
+ - (djm) Release 1.0alpha1
+
+20060326
+ - (djm) Make tty00 speed settable via Makefile
+
+20060323
+ - (djm) Tweak "make everything" target to make it less terrible
+ - (djm) Sync kernel configs
+ - (djm) Lots of rc.initial tweaks from stevesk@, including the ability
+   to maintain a r/w /flash and the addition of a rc.init script
+
+20060322
+ - (djm) Add a kernel config for the PC Engines WRAP 1/2 boards: WRAP12
+   Made possible by PC Engines' kind donation of one of their boards
+
+20060222
+ - (djm) Zap the serial console stuff from the kernel configs, we do it
+   in boot.conf already (from stevesk@)
+ - (djm) Add commented out sections for named to the packing lists and rc
+ - (djm) Remove deprecated sysbeep driver
+ - (djm) Release 0.9beta1
+
+20060130
+ - (djm) Add rlphy to COMMELL-LE564, needed by stevesk@
+ - (djm) From stevesk@: add hostname.rl0
+ - (djm) From stevesk@: add chroot to list
+ - (djm) From stevesk@: update misc/patches with updated ldconfig diff
+
+20060125
+ - (djm) Add ipsecctl to list, requested by a few people
+
+20060112
+ - (djm) From stevesk@: add rl* to COMMELL-LE564 so that it supports the
+   IBase FWA7204 as well
+
+20060107
+ - (djm) From stevesk@: kill newline at end of mk-mini.conf
+ - (djm) From stevesk@: new ftp-proxy makes inetd.conf redundant and wrong
+ - (djm) From stevesk@: disable DEBUG symbols in mk-mini.conf
+ - (djm) Remove isadma from SOEKRIS* kernels
+ - (djm) Update version for 0.9alpha1 release
+ - (djm) All kernels need NKPTP=8 now
+
+20060104
+ - (djm) Sync to -current. Something has bloated significantly, so
+   increase ramdisk size again
+ - (djm) Add NTFS and list.recovery, handy for dead HD recovery
+ - (djm) Sync SOEKRIS*, GENERIC-RD and NTFS kernels
+ - (djm) Crank version to 0.9 alpha for release
+
+20051023
+ - (djm) Add a kernel configuration for the Commell LE564 SBC
+
+20051006
+ - (djm) pass DESTDIR through to runlist.sh, from stevesk@
+
+20051001
+ - (djm) Disable identd by default, prodded by stevesk@
+ - (djm) sshd isn't run by default for a while now, prodded by stevesk@
+
+20050922
+ - (djm) Another README spelling fix from Kevin Steves
+
+20050920
+ - (djm) README Spelling fixes from Kevin Steves
+
+20050814
+ - (djm) Add hostapd to list
+
+20050804
+ - (djm) Add some missing groups, spotted by aanriot@
+
+20050804
+ - (djm) Add authpf and commented-out rarpd, bootparamd and portmap entries
+ - (djm) Add "everything" target
+
+20050717
+ - (djm) Remove out of date "SLIM" kernel config
+ - (djm) Sync GENERIC-RD
+
+20050715
+ - (djm) Run pwd_mkdb to rebuild all password databases on boot
+
+20050712
+ - (djm) Sync with changes made on FLASHBOOT_0_7_BRANCH
+
+20050621
+ - (djm) Add trunk interface
+ - (djm) Sync kernel configs
+
+20050520
+ - (djm) Add ath and ral 
+ - (djm) do unnecessary directory deletion in list before copying libs -
+   gives them a little more space to fit
+ 
+20050429
+ - (djm) Add extra users to master.passwd
+ - (djm) Crank ramdisk size back 10Mb
+ - (djm) Add xterm-new terminal
+ - (djm) Add ospfd and ospfctl
+
+20050405
+ - (djm) Sync kernel configs with -current
+
+20050315
+ - (djm) Add PCI-PCI bridges; from ho@
+
+20050204
+ - (djm) Reduce BUFCACHEPERCENT to 1, suggested by jason AT ackley.net
+ - (djm) Add some detailed installation instructions
+ - (djm) Build system fixes and cleanups from jakob@ and ho@
+ - (djm) SOEKRIS4801 configuration from jakob@ and ho@
+
+20041221
+ - (djm) Add brconfig to list; suggested by stu AT spacehopper.org
+ - (djm) Spell "systat" right
+ - (djm) Add MROUTING and PIM to SOEKRIS4501 kernel config
+
+20041221
+ - (djm) Sync SOEKRIS4051 with -current
+ - (djm) Sync rc.initial rules with -current
+ - (djm) Add spppcontrol, systat, vmstat and top to list
+ - (djm) Load final pf rules before daemon start
+
+20041220
+ - (djm) Release 0.6.1
+
+20040926
+ - (djm) Add wicontrol
+
+20040921
+ - (djm) Reset set[ug]id permissions on installed programs; reported by 
+   drahn AT openbsd.org and nj.lee AT plumtree.co.nz
+ - (djm) Sync group list
+ - (djm) Relax regex to match useful ldd output when copying libs; based on 
+   fix from nj.lee AT plumtree.co.nz
+
+20040904
+ - (djm) Release 0.6
+
+20040903
+ - (djm) Add ttyC0 to /etc/ttys
+
+20040902
+ - (djm) Increase NKPTP to allow for kernel blobs >= 16Mb
+ - (djm) Disable isadma on GENERIC kernel, because kernel >= 16Mb uses all ISA
+   DMAable memory
+ - (djm) Add sed, tty and diff to list
+ - (djm) Shrink moduli file (4 moduli of each size)
+ - (djm) Unbreak root's shell
+ - (djm) Add SLIM kernel, a halfway cut-down GENERIC
+ - (djm) Add a few tweaks to save some space, including shrinking the rd
+ - (djm) Soekris kernel doesn't need NKPTP change
+ - (djm) Build kernel in eponymous directory, so its name is recorded in dmesg
+
+20040826
+ - (djm) Sync master.passwd
+ - (djm) Print disk usage in kb, not blocks
+
+20040825
+ - (djm) Updated short etc/moduli and added a tool to randomly generate short
+   lists of the from /etc/moduli
+ - (djm) fsck flash filesystem
+ - (djm) Add daemon startup entries for isakmpd, bgpd and ntpd
+ - (djm) Rework rc.conf a little to allow flag passing to daemons
+ - (djm) No sshd by default
+
+20040824
+ - (djm) Add wi
+ - (djm) Add a couple more terminal types
+ - (djm) Add ssh-keygen
+
+20040802
+ - (djm) Update to faily recent kernel and add hifn
+ - (djm) Sync GENERIC-RD to -current
+ - (djm) Sync SOEKRIS4501 RCS Ids
+ - (djm) Add ntpd to list
+
+20040608
+ - (djm) Update kernel configs to -current
+ - (djm) Add some stuff to ramdisk
+
+20040506
+ - (djm) Sync SOEKRIS4501 kernel conf with OpenBSD 3.5
+ - (djm) Flashboot 0.5
+
+20040502
+ - (djm) Add bgpd and bgpctl
+
+20040324
+ - (djm) Sync GENERIC-RD
+ - (djm) Don't need ldconfig trick
+ - (djm) Activate NTFS support in GENERIC-RD, it makes a good rescue image
+
+20040203
+ - (djm) Add cron and ftp
+ - (djm) Add cygwin terminal type
+
+20040112
+ - (djm) Re-add apm device so locore.s uses hlt instruction for reduced power
+   usage
+
+20040107
+ - (djm) Make the ramdisk assume all dynamically linked binaries. Saves ~1.5Mb
+   idea from Markus Friedl
+ - (djm) Fix syslog.conf for new membuf format
+ - (djm) Trim some crud
+ - (djm) Crank version
+
+20040106
+ - (djm) A few of my patches have been obseleted or incorporated into 
+   OpenBSD, so don't mention them or duplicate them here.
+ - (djm) Tidy and update the README a little
+
+20031203
+ - (djm) Use directory structure under /flash/conf again, but support tgz 
+   configs too
+ - (djm) Create proper directory hierarchy with full mtree
+ - (djm) Use cut-down list of moduli (IPsec IANA groups) rather than 
+   KEXMethods patch for ssh
+
+20031120
+ - (djm) Lots of changes for Soekris NET4501
+   - Initial unconfigured state is useful
+   - Configs are extracted from /flash/conf.tgz
+   - Greatly improved ramdisk image
+     - Dynamic isakmpd
+     - Shared libs with proper ld.so.hints
+     - Pregenerated kvm database
+
+20030701
+ - (djm) Trim kernel and clearly identify my commenting outs
+ - (djm) Further minimise fstab
+ - (djm) Update for OpenBSD CVS -current changes (compress replacing gzip)
+

@@ -1,0 +1,319 @@
+# $Id: list,v 1.62 2010/03/17 07:48:35 jakob Exp $
+
+# copy the MAKEDEV script and make some devices
+SCRIPT ${DESTDIR}/dev/MAKEDEV			dev/MAKEDEV
+SPECIAL chmod 700 dev/MAKEDEV
+SPECIAL cd dev; ./MAKEDEV ramdisk pty systrace tty00 tty01 pci wdt0 
+SPECIAL cd dev; ./MAKEDEV ttyU0 ttyU1
+SPECIAL cd dev; ./MAKEDEV tun0 tun1 tun2 tun3 tun4 tun5 tun6 tun7
+SPECIAL cd dev; ./MAKEDEV bpf0 bpf1 bpf2 bpf3 bpf4 bpf5 bpf6 bpf7 
+SPECIAL cd dev; ./MAKEDEV pf crypto fd wsmux wscons apm local gpio
+
+COPY	${DESTDIR}/etc/disktab			etc/disktab
+COPY	${DESTDIR}/etc/login.conf		etc/login.conf
+COPY	${DESTDIR}/etc/gettytab			etc/gettytab
+COPY	${DESTDIR}/etc/remote			etc/remote
+COPY	${DESTDIR}/etc/netstart			etc/netstart
+COPY	${DESTDIR}/etc/services			etc/services
+COPY	${DESTDIR}/etc/protocols		etc/protocols
+COPY	${DESTDIR}/etc/shells			etc/shells
+COPY	${DESTDIR}/etc/ksh.kshrc		etc/ksh.kshrc
+COPY	${DESTDIR}/etc/pf.os			etc/pf.os
+COPY	${DESTDIR}/usr/share/zoneinfo/GMT	etc/localtime
+#COPY	${DESTDIR}/var/named/etc/named.conf	var/named/etc/named.conf
+#COPY	/dev/null				var/named/etc/rndc.key
+#COPY	${DESTDIR}/var/named/standard/localhost var/named/standard/localhost
+#COPY	${DESTDIR}/var/named/standard/loopback	var/named/standard/loopback
+#COPY	${DESTDIR}/var/named/standard/loopback6.arpa var/named/standard/loopback6.arpa
+#COPY	${DESTDIR}/var/named/etc/root.hint	var/named/etc/root.hint
+COPY	${DESTDIR}/etc/mtree/4.4BSD.dist	etc/mtree/4.4BSD.dist
+SPECIAL chmod 755 etc/netstart
+SPECIAL touch var/cron/cron.deny
+SPECIAL chown root.crontab var/cron/cron.deny
+SPECIAL chmod 0660 var/cron/cron.deny
+
+# optional ral(4) firmware (copied from build system)
+#COPY	/etc/firmware/ral-rt2561		etc/firmware
+#COPY	/etc/firmware/ral-rt2561s		etc/firmware
+#COPY	/etc/firmware/ral-rt2661		etc/firmware
+#COPY	/etc/firmware/ral-rt2860		etc/firmware
+
+# optional ipw(4) firmware (copied from build system)
+#COPY	/etc/firmware/ipw-bss			etc/firmware
+#COPY	/etc/firmware/ipw-ibss			etc/firmware
+#COPY	/etc/firmware/ipw-license		etc/firmware
+#COPY	/etc/firmware/ipw-monitor		etc/firmware
+
+# optional iwi(4) firmware (copied from build system)
+#COPY	/etc/firmware/iwi-bss			etc/firmware
+#COPY	/etc/firmware/iwi-ibss			etc/firmware
+#COPY	/etc/firmware/iwi-license		etc/firmware
+#COPY	/etc/firmware/iwi-monitor		etc/firmware
+
+# various files that we need in /etc for the install
+COPY	${OBJDIR}/termdefs/usr/share/misc/termcap	usr/share/misc/
+COPY	${OBJDIR}/termdefs/usr/share/misc/termcap.db	usr/share/misc/
+COPY	${OBJDIR}/termdefs/usr/share/misc/terminfo.db	usr/share/misc/
+
+# Customised startup scripts and support files
+COPY	/dev/null				etc/dhclient.conf
+COPY	${CURDIR}/initial-conf/backupconfig	bin/backupconfig
+COPY	${CURDIR}/initial-conf/backup.conf	etc/backup.conf
+COPY	${CURDIR}/initial-conf/createconfig	bin/createconfig
+COPY	${CURDIR}/initial-conf/dotprofile	root/.profile
+COPY	${CURDIR}/initial-conf/fstab.initial	etc/fstab
+COPY	${CURDIR}/initial-conf/group		etc/group
+COPY	${CURDIR}/initial-conf/hostname.sis0	etc/hostname.sis0
+COPY	${CURDIR}/initial-conf/hostname.sis0	etc/hostname.em0
+COPY	${CURDIR}/initial-conf/hostname.sis0	etc/hostname.rl0
+COPY	${CURDIR}/initial-conf/hostname.sis0	etc/hostname.vr0
+COPY	${CURDIR}/initial-conf/hosts		etc/hosts
+COPY	${CURDIR}/initial-conf/inetd.conf	etc/inetd.conf
+COPY	${CURDIR}/initial-conf/master.passwd	etc/master.passwd
+COPY	${CURDIR}/initial-conf/banner		etc/banner
+COPY	${CURDIR}/initial-conf/myname		etc/myname
+COPY	${CURDIR}/initial-conf/pf.conf		etc/pf.conf
+COPY	${CURDIR}/initial-conf/rc.conf		etc/rc.conf
+COPY	${CURDIR}/initial-conf/rc.initial	etc/rc
+COPY	${CURDIR}/initial-conf/rc.pkg		etc/rc.pkg
+COPY	${CURDIR}/initial-conf/resolv.conf	etc/resolv.conf
+COPY	${CURDIR}/initial-conf/moduli		etc/moduli
+COPY	${CURDIR}/initial-conf/sshd_config	etc/ssh/sshd_config
+COPY	${CURDIR}/initial-conf/sysctl.conf	etc/sysctl.conf
+COPY	${CURDIR}/initial-conf/syslog.conf	etc/syslog.conf
+COPY	${CURDIR}/initial-conf/ttys		etc/ttys
+SPECIAL	chmod 755 bin/backupconfig
+SPECIAL	chmod 755 bin/createconfig
+SPECIAL chmod 755 etc/rc
+SPECIAL chmod 755 etc/rc.pkg
+SPECIAL chown root.wheel etc/master.passwd
+SPECIAL chmod 0600 etc/master.passwd etc/ssh/sshd_config
+SPECIAL sed "/^tty00/s/19200/${TTYSPEED}/" < etc/ttys > etc/ttys.speed
+SPECIAL mv etc/ttys.speed etc/ttys
+
+# Miscellaneous extra tools
+COPY	${CURDIR}/tools/rw.sh			bin/rw
+COPY	${CURDIR}/tools/ro.sh			bin/ro
+SPECIAL	chmod 755 bin/rw
+SPECIAL	chmod 755 bin/ro
+
+COPY ${DESTDIR}/bin/cat				bin/cat
+COPY ${DESTDIR}/bin/chmod			bin/chmod
+COPY ${DESTDIR}/bin/cp				bin/cp
+COPY ${DESTDIR}/bin/date			bin/date
+COPY ${DESTDIR}/bin/dd				bin/dd
+COPY ${DESTDIR}/bin/df				bin/df
+COPY ${DESTDIR}/bin/echo			bin/echo
+COPY ${DESTDIR}/bin/ed				bin/ed
+COPY ${DESTDIR}/bin/expr			bin/expr
+COPY ${DESTDIR}/bin/hostname			bin/hostname
+COPY ${DESTDIR}/bin/kill			bin/kill
+COPY ${DESTDIR}/bin/ksh				bin/ksh
+COPY ${DESTDIR}/bin/ln				bin/ln
+COPY ${DESTDIR}/bin/ls				bin/ls
+COPY ${DESTDIR}/bin/md5				bin/md5
+COPY ${DESTDIR}/bin/mkdir			bin/mkdir
+COPY ${DESTDIR}/bin/mv				bin/mv
+COPY ${DESTDIR}/bin/pax				bin/pax
+COPY ${DESTDIR}/bin/ps				bin/ps
+COPY ${DESTDIR}/bin/pwd				bin/pwd
+COPY ${DESTDIR}/bin/rm				bin/rm
+COPY ${DESTDIR}/bin/rmdir			bin/rmdir
+COPY ${DESTDIR}/bin/sleep			bin/sleep
+COPY ${DESTDIR}/bin/stty			bin/stty
+COPY ${DESTDIR}/bin/sync			bin/sync
+COPY ${DESTDIR}/bin/systrace			bin/systrace
+COPY ${DESTDIR}/bin/test			bin/test
+#COPY ${DESTDIR}/sbin/ldattach			sbin/ldattach
+COPY ${DESTDIR}/sbin/ldconfig			sbin/ldconfig
+COPY ${DESTDIR}/sbin/dhclient			sbin/dhclient
+COPY ${DESTDIR}/sbin/dhclient-script		sbin/dhclient-script
+COPY ${DESTDIR}/sbin/dmesg			sbin/dmesg
+COPY ${DESTDIR}/sbin/fsck			sbin/fsck
+COPY ${DESTDIR}/sbin/fsck_ffs			sbin/fsck_ffs
+COPY ${DESTDIR}/sbin/ifconfig			sbin/ifconfig
+COPY ${DESTDIR}/sbin/init			sbin/init
+COPY ${DESTDIR}/sbin/ipsecctl			sbin/ipsecctl
+COPY ${DESTDIR}/sbin/isakmpd			sbin/isakmpd
+COPY ${DESTDIR}/sbin/mknod			sbin/mknod
+COPY ${DESTDIR}/sbin/mount			sbin/mount
+COPY ${DESTDIR}/sbin/mount_ffs			sbin/mount_ffs
+COPY ${DESTDIR}/sbin/newfs			sbin/newfs
+COPY ${DESTDIR}/sbin/nologin			sbin/nologin
+COPY ${DESTDIR}/sbin/pfctl			sbin/pfctl
+COPY ${DESTDIR}/sbin/ping			sbin/ping
+COPY ${DESTDIR}/sbin/ping6			sbin/ping6
+COPY ${DESTDIR}/sbin/reboot			sbin/reboot
+COPY ${DESTDIR}/sbin/route			sbin/route
+COPY ${DESTDIR}/sbin/sysctl			sbin/sysctl
+COPY ${DESTDIR}/sbin/ttyflags			sbin/ttyflags
+COPY ${DESTDIR}/sbin/umount			sbin/umount
+#COPY ${DESTDIR}/sbin/wicontrol			sbin/wicontrol
+COPY ${DESTDIR}/usr/bin/awk			usr/bin/awk
+COPY ${DESTDIR}/usr/bin/basename		usr/bin/basename
+COPY ${DESTDIR}/usr/bin/crontab			usr/bin/crontab
+COPY ${DESTDIR}/usr/bin/diff			usr/bin/diff
+COPY ${DESTDIR}/usr/bin/cut			usr/bin/cut
+COPY ${DESTDIR}/usr/bin/du			usr/bin/du
+COPY ${DESTDIR}/usr/bin/env			usr/bin/env
+COPY ${DESTDIR}/usr/bin/false			usr/bin/false
+COPY ${DESTDIR}/usr/bin/find			usr/bin/find
+COPY ${DESTDIR}/usr/bin/ftp			usr/bin/ftp
+COPY ${DESTDIR}/usr/bin/grep			usr/bin/grep
+COPY ${DESTDIR}/usr/bin/gzip			usr/bin/gzip
+COPY ${DESTDIR}/usr/bin/head			usr/bin/head
+COPY ${DESTDIR}/usr/bin/id			usr/bin/id
+COPY ${DESTDIR}/usr/bin/less			usr/bin/less
+COPY ${DESTDIR}/usr/bin/logger			usr/bin/logger
+COPY ${DESTDIR}/usr/bin/login			usr/bin/login
+COPY ${DESTDIR}/usr/bin/mg			usr/bin/mg
+COPY ${DESTDIR}/usr/bin/nc			usr/bin/nc
+COPY ${DESTDIR}/usr/bin/netstat			usr/bin/netstat
+COPY ${DESTDIR}/usr/bin/passwd			usr/bin/passwd
+COPY ${DESTDIR}/usr/bin/printf			usr/bin/printf
+COPY ${DESTDIR}/usr/bin/scp			usr/bin/scp
+COPY ${DESTDIR}/usr/bin/sed			usr/bin/sed
+COPY ${DESTDIR}/usr/bin/sftp			usr/bin/sftp
+COPY ${DESTDIR}/usr/bin/sort			usr/bin/sort
+COPY ${DESTDIR}/usr/bin/stat			usr/bin/stat
+COPY ${DESTDIR}/usr/bin/ssh			usr/bin/ssh
+COPY ${DESTDIR}/usr/bin/ssh-keygen		usr/bin/ssh-keygen
+COPY ${DESTDIR}/usr/bin/su			usr/bin/su
+COPY ${DESTDIR}/usr/bin/systat			usr/bin/systat
+COPY ${DESTDIR}/usr/bin/tail			usr/bin/tail
+COPY ${DESTDIR}/usr/bin/tip			usr/bin/tip
+COPY ${DESTDIR}/usr/bin/top			usr/bin/top
+COPY ${DESTDIR}/usr/bin/touch			usr/bin/touch
+COPY ${DESTDIR}/usr/bin/tput			usr/bin/tput
+COPY ${DESTDIR}/usr/bin/true			usr/bin/true
+COPY ${DESTDIR}/usr/bin/tset			usr/bin/tset
+COPY ${DESTDIR}/usr/bin/tty			usr/bin/tty
+COPY ${DESTDIR}/usr/bin/uname			usr/bin/uname
+COPY ${DESTDIR}/usr/bin/uptime			usr/bin/uptime
+COPY ${DESTDIR}/usr/bin/vi			usr/bin/vi
+COPY ${DESTDIR}/usr/bin/vmstat			usr/bin/vmstat
+COPY ${DESTDIR}/usr/libexec/auth/login_passwd	usr/libexec/auth/login_passwd
+COPY ${DESTDIR}/usr/libexec/getty		usr/libexec/getty
+COPY ${DESTDIR}/usr/libexec/identd		usr/libexec/identd
+COPY ${DESTDIR}/usr/libexec/ld.so		usr/libexec/ld.so
+COPY ${DESTDIR}/usr/libexec/sftp-server		usr/libexec/sftp-server
+COPY ${DESTDIR}/usr/libexec/spamd		usr/libexec/spamd
+COPY ${DESTDIR}/usr/libexec/spamd-setup		usr/libexec/spamd-setup
+COPY ${DESTDIR}/usr/libexec/tftpd		usr/libexec/tftpd
+COPY ${DESTDIR}/usr/sbin/authpf			usr/sbin/authpf
+COPY ${DESTDIR}/usr/sbin/arp			usr/sbin/arp
+COPY ${DESTDIR}/usr/sbin/bgpd			usr/sbin/bgpd
+COPY ${DESTDIR}/usr/sbin/bgpctl			usr/sbin/bgpctl
+COPY ${DESTDIR}/usr/sbin/chroot			usr/sbin/chroot
+COPY ${DESTDIR}/usr/sbin/cron			usr/sbin/cron
+COPY ${DESTDIR}/usr/sbin/dev_mkdb		usr/sbin/dev_mkdb
+COPY ${DESTDIR}/usr/sbin/dhcpd			usr/sbin/dhcpd
+COPY ${DESTDIR}/usr/sbin/dhcrelay		usr/sbin/dhcrelay
+COPY ${DESTDIR}/usr/sbin/ftp-proxy		usr/sbin/ftp-proxy
+COPY ${DESTDIR}/usr/sbin/gpioctl		usr/sbin/gpioctl
+COPY ${DESTDIR}/usr/sbin/hostapd		usr/sbin/hostapd
+COPY ${DESTDIR}/usr/sbin/inetd			usr/sbin/inetd
+#COPY ${DESTDIR}/usr/sbin/kvm_mkdb		usr/sbin/kvm_mkdb
+COPY ${DESTDIR}/usr/sbin/mtree			usr/sbin/mtree
+#COPY ${DESTDIR}/usr/sbin/named			usr/sbin/named
+COPY ${DESTDIR}/usr/sbin/ndp			usr/sbin/ndp
+COPY ${DESTDIR}/usr/sbin/ntpd			usr/sbin/ntpd
+COPY ${DESTDIR}/usr/sbin/ospfd			usr/sbin/ospfd
+COPY ${DESTDIR}/usr/sbin/ospfctl		usr/sbin/ospfctl
+#COPY ${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
+COPY ${DESTDIR}/usr/sbin/ppp			usr/sbin/ppp
+COPY ${DESTDIR}/usr/sbin/pppctl			usr/sbin/pppctl
+COPY ${DESTDIR}/usr/sbin/pppoe			usr/sbin/pppoe
+COPY ${DESTDIR}/usr/sbin/pwd_mkdb		usr/sbin/pwd_mkdb
+#COPY ${DESTDIR}/usr/sbin/rarpd			usr/sbin/rarpd
+COPY ${DESTDIR}/usr/sbin/rdate			usr/sbin/rdate
+#COPY ${DESTDIR}/usr/sbin/rpc.bootparamd		usr/sbin/rpc.bootparamd
+COPY ${DESTDIR}/usr/sbin/rtadvd			usr/sbin/rtadvd
+COPY ${DESTDIR}/usr/sbin/rtsold			usr/sbin/rtsold
+COPY ${DESTDIR}/usr/sbin/snmpctl		usr/sbin/snmpctl
+COPY ${DESTDIR}/usr/sbin/snmpd			usr/sbin/snmpd
+COPY ${DESTDIR}/usr/sbin/sasyncd		usr/sbin/sasyncd
+COPY ${DESTDIR}/usr/sbin/sshd			usr/sbin/sshd
+COPY ${DESTDIR}/usr/sbin/syslogc		usr/sbin/syslogc
+COPY ${DESTDIR}/usr/sbin/syslogd		usr/sbin/syslogd
+COPY ${DESTDIR}/usr/sbin/tcpdrop		usr/sbin/tcpdrop
+COPY ${DESTDIR}/usr/sbin/tcpdump		usr/sbin/tcpdump
+COPY ${DESTDIR}/usr/sbin/traceroute		usr/sbin/traceroute
+COPY ${DESTDIR}/usr/sbin/traceroute6		usr/sbin/traceroute6
+COPY ${DESTDIR}/usr/sbin/watchdogd		usr/sbin/watchdogd
+
+# Link pseudonymous binaries
+SPECIAL ln bin/chmod bin/chgrp
+SPECIAL ln bin/chmod sbin/chown
+SPECIAL ln bin/ksh bin/sh
+SPECIAL ln bin/md5 bin/sha1
+SPECIAL ln bin/pax bin/cpio
+SPECIAL ln bin/pax bin/tar
+SPECIAL ln bin/test bin/[
+SPECIAL ln sbin/mknod sbin/mkfifo
+SPECIAL ln sbin/newfs sbin/mount_mfs
+SPECIAL ln sbin/reboot sbin/halt
+SPECIAL ln usr/bin/awk usr/bin/nawk
+SPECIAL ln usr/bin/grep usr/bin/egrep
+SPECIAL ln usr/bin/grep usr/bin/fgrep
+SPECIAL ln usr/bin/grep usr/bin/zegrep
+SPECIAL ln usr/bin/grep usr/bin/zfgrep
+SPECIAL ln usr/bin/grep usr/bin/zgrep
+SPECIAL ln usr/bin/gzip usr/bin/compress
+SPECIAL ln usr/bin/gzip usr/bin/gunzip
+SPECIAL ln usr/bin/gzip usr/bin/gzcat
+SPECIAL ln usr/bin/gzip usr/bin/uncompress
+SPECIAL ln usr/bin/gzip usr/bin/zcat
+SPECIAL ln usr/bin/less usr/bin/more
+SPECIAL ln usr/bin/tip usr/bin/cu
+SPECIAL ln usr/bin/tput usr/bin/clear
+SPECIAL ln usr/bin/tset usr/bin/reset
+SPECIAL ln usr/bin/uptime usr/bin/w
+SPECIAL ln usr/bin/vi usr/bin/ex
+
+# We don't need the full mtree hierarchy
+# Use find and rmdir so we don't accidentally delete files that are there
+SPECIAL find -d ./var/games -type d -exec rmdir {} \; >/dev/null 2>&1
+SPECIAL find -d ./var/www -type d -exec rmdir {} \; >/dev/null 2>&1
+SPECIAL find -d ./usr -type d -exec rmdir {} \; >/dev/null 2>&1
+SPECIAL sync
+
+# Copy dynamic libs
+SPECIAL mkdir -p ./usr/lib
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib bin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib sbin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/bin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/sbin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/libexec/*
+
+# Set special permissions on some binaries
+SPECIAL chown root.auth		usr/libexec/auth usr/libexec/auth/login_passwd
+SPECIAL chmod 0750		usr/libexec/auth
+SPECIAL chmod 4755		usr/libexec/auth/login_passwd
+SPECIAL chmod 4755		sbin/ping sbin/ping6
+SPECIAL chown root.crontab 	usr/bin/crontab
+SPECIAL chmod 2755 		usr/bin/crontab
+SPECIAL chown root.kmem		usr/bin/netstat
+SPECIAL chmod 2755		usr/bin/netstat
+SPECIAL chown root.kmem		usr/bin/vmstat
+SPECIAL chmod 2755		usr/bin/vmstat
+SPECIAL chown root.kmem		usr/bin/systat
+SPECIAL chmod 2755		usr/bin/systat
+SPECIAL chmod 4755		usr/bin/passwd
+SPECIAL chmod 4755		usr/bin/su
+SPECIAL chown root.authpf	usr/sbin/authpf
+SPECIAL chmod 6555		usr/sbin/authpf
+SPECIAL chown root.network	usr/sbin/ppp
+SPECIAL chmod 4750		usr/sbin/ppp
+SPECIAL chmod 4755		usr/sbin/traceroute
+SPECIAL chmod 4755		usr/sbin/traceroute6
+
+# Finally, generate databases
+SPECIAL pwd_mkdb -d ./etc master.passwd
+#SPECIAL ${DESTDIR}/usr/sbin/kvm_mkdb -vo ${OBJDIR} ${OBJDIR}/bsd
+#COPY ${OBJDIR}/kvm_bsd.db ./var/db
+SPECIAL kvm_mkdb -vo ./var/db ${OBJDIR}/bsd
+
+# Generate flashboot.mtree without time, used when making backups
+SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
+

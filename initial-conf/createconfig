@@ -1,0 +1,149 @@
+#!/bin/sh
+#
+# $Id: createconfig,v 1.1 2007/06/15 05:24:42 jakob Exp $
+
+ask() {
+        local _question=$1 _default=$2
+
+        set -o noglob
+        while :; do
+                echo -n "$_question "
+                [[ -z $_default ]] || echo -n "[$_default] "
+                read resp
+                case $resp in
+                !)      echo "Type 'exit' to return to install."
+                        sh
+                        ;;
+                !*)     eval ${resp#?}
+                        ;;
+                *)      : ${resp:=$_default}
+                        break
+                        ;;
+                esac
+        done
+        set +o noglob
+}
+
+set_term() {
+        local _tables
+
+        TERM=${TERM:-${MDTERM:-vt220}}
+        ask "Terminal type?" $TERM
+        export TERM=$resp
+
+        [[ -x /sbin/kbd ]] || return
+        _tables=$(kbd -l | egrep -v "^(user|tables|encoding)")
+        while :; do
+                ask "kbd(8) mapping? ('L' for list)" "none"
+                case $resp in
+                [Ll?])  echo "Major tables: $_tables" ;;
+                none)   return ;;
+                *)      kbd $resp && { echo $resp >/tmp/kbdtype ; return ; } ;;
+                esac
+        done
+}
+
+ALLIF=`ifconfig | grep flags | awk '{print $1}' | sed '/pflog/d; /pfsync/d; /enc/d; /lo0/d; s/://'`
+FIRSTIF=`ifconfig | grep flags | awk '{print $1}' | sed '/pflog/d; /pfsync/d; /enc/d; /lo0/d;  s/://' | sed q`
+
+	# Configure the terminal and keyboard.
+	set_term
+
+# First check if we can find existing config
+
+for x in wd0a sd0i; do
+	mount -r -s /dev/$x /flash 2>/dev/null
+	if [ -e /flash/conf/etc ] ;then
+	echo "Found config on $x"	
+	fi
+	umount /flash 2>/dev/null
+	done
+
+echo "0. Use existing config"
+echo "1. Manual setup"
+echo "2. DHCP"
+echo "3. Do not run createconfig"
+
+while
+do
+echo -n "Setup method?: "
+read METHOD
+case "$METHOD" in
+[0123]*)break;;
+esac
+done
+
+if [ "$METHOD" = "0" ] ; then
+	echo "Device to copy config from?: "
+	read DEV
+	echo "Copying config files"
+	mount -r -s /dev/$DEV /flash
+	cp -pR /flash/conf/etc/* /etc/
+	echo "Done"
+	echo "Unmounting backup device"
+	umount /flash
+
+elif [ "$METHOD" = "1" ] ; then
+	echo "Available network devices\n" 
+	echo "$ALLIF"
+
+	echo -n "What is the name of the interface to use? [eg $FIRSTIF]: "
+	read IF
+	export IF
+        echo -n "Hostname for this machine? "
+	read HOSTNAME
+	echo -n "IP-adress: "
+	read IP
+	echo -n "And the netmask: "
+	read MASK
+	echo -n "And our gateway: "
+	read GW
+	echo "Writing config"
+	echo "inet $IP $MASK NONE" > /etc/hostname.$IF
+	echo "Interface config done"
+
+	echo -n "You may perhaps want a nameserver? Not really needed: "
+        read NS
+	echo "nameserver $NS" > /etc/resolv.conf
+	echo "$HOSTNAME" > /etc/myname
+	echo "$GW" > /etc/mygate
+
+elif	[ "$METHOD" = "2" ] ; then
+	echo "Available network devices\n"
+	echo "$ALLIF"
+	echo -n "What is the name of the interface to use? [eg  $FIRSTIF]: "
+	read IF
+	export IF
+	echo "dhcp NONE NONE NONE" > /etc/hostname.$IF
+
+elif	[ "$METHOD" = "3" ] ; then
+	exit 1
+
+else
+	echo "Choice does not compute"
+fi
+
+if [ "$METHOD" != "0" ] ; then
+	# echo "Setting up pf interface"
+	sed "s/^mgmt_if.*$/mgmt_if = $IF/" /etc/pf.conf > /etc/pf.conf.new
+	mv /etc/pf.conf.new /etc/pf.conf
+
+	echo "\nShall we backup configuration files?"
+	echo "If not then you will be asked for network configuration on each boot"
+
+	while
+	do
+	echo -n "Backup? [Y/n]: "
+	read BACKUP
+	case "$BACKUP" in
+	[Yn]*)break;;
+	esac
+	done
+
+	if 	[ "$BACKUP" = "Y" ] ; then
+		echo "Backing up config files"
+		backupconfig
+	else
+	echo "Continue startup without configuration backup"
+	fi
+fi

@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# $Id: backupconfig,v 1.4 2009/05/27 19:06:19 stevesk Exp $
+
+echo "Using /etc/backup.conf"
+
+# Find all changed files in root file system
+mtree -s2121 -x -f /etc/flashboot.mtree -p / | \
+
+# Remove lines with additional info 
+sed '/^[[:space:]]/d; /^.:/d; s/://; s/extra //' | \
+
+# Use only path/filename
+awk '{print $1}' | \
+
+# Remove all mtree-lines
+grep -v -e "mtree" | \
+
+# Add starting / to path and store result
+sed 's/^/\//' > /tmp/allfiles
+
+# Remove backupfiles if exists
+rm -rf /tmp/backupfiles
+
+for i in `grep -v "#" /etc/backup.conf`; do
+	grep $i /tmp/allfiles >> /tmp/backupfiles
+done
+
+# Print files that will be backed up
+echo "These files where changed (since dist) and will be backed up:"
+cat < /tmp/backupfiles
+
+if [ `sysctl hw.disknames | grep sd0` ] ; then
+	if mount -o rw /dev/sd0i /flash ; then
+		echo "Saving config to USB memory"
+		# Copy files
+		cpio -p -du /flash/conf/ < /tmp/backupfiles 2>/dev/null
+		echo "Unmounting backup device"
+		umount /flash
+		rm /tmp/backupfiles
+	fi
+	exit 0
+elif [ `sysctl hw.disknames | grep wd` ] ; then
+	echo "Saving config to flash disk"
+	if [ -e /flash/conf ] ; then
+		mount -u -o rw /flash
+		# Copy files
+		cpio -p -du /flash/conf/ < /tmp/backupfiles
+		echo "Remounting flash read-only"
+		mount -u -o ro /flash
+		rm /tmp/backupfiles
+	else
+		echo "Mounting Flash temporarily to save config"
+                mount -o rw /flash
+                # Copy files
+                cpio -p -du /flash/conf/ < /tmp/backupfiles
+                echo "Unmounting Flash"
+                umount /flash
+                rm /tmp/backupfiles  
+	fi
+	exit 0
+else
+	echo "WARNING! No possible backup device found."
+fi
