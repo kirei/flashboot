@@ -3,10 +3,6 @@
 CWD=`pwd`
 WORKDIR=sandbox
 
-TESTAR=hej
-
-export TESTAR
-
 if ! [ -d ${CWD}/${WORKDIR}/dev  ]; then
   echo "You have no sandbox to play with yet. Run sudo ./build-release.sh first"
   exit
