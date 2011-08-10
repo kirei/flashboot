@@ -2,7 +2,7 @@
 
 BASE=`pwd`
 SRCDIR=${BSDSRCDIR:-/usr/src}
-DESTDIR=${DESTDIR:-${BASE}/flash-dist}
+DESTDIR=${DESTDIR:-${BASE}/sandbox}
 KERNELFILE=${KERNELFILE:-${BASE}/obj/bsd.gz}
 SUDO=sudo
 DEVICE=svnd0

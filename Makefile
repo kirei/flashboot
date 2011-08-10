@@ -37,7 +37,8 @@ TTYSPEED=	9600
 #NBLKS=		19456		# disktab.9.5mb
 #NBLKS=		20480		# disktab.10mb
 #NBLKS=		24576		# disktab.12mb
-NBLKS=		30720		# disktab.15mb
+#NBLKS=		30720		# disktab.15mb
+NBLKS=		98304		# disktab.48mb
 NEWFSARGS=	-m 0 -o space
 KOPTS=		#-Os
 
@@ -55,7 +56,8 @@ EXTRACONF=	${.CURDIR}/conf
 #DISKPROTO=	${.CURDIR}/disktabs/disktab.9.5mb
 #DISKPROTO=	${.CURDIR}/disktabs/disktab.10mb
 #DISKPROTO=	${.CURDIR}/disktabs/disktab.12mb
-DISKPROTO=	${.CURDIR}/disktabs/disktab.15mb
+#DISKPROTO=	${.CURDIR}/disktabs/disktab.15mb
+DISKPROTO=      ${.CURDIR}/disktabs/disktab.48mb
 MTREE=		${DESTDIR}/etc/mtree/4.4BSD.dist
 MTREE_CUST=	${.CURDIR}/mtree.conf
 

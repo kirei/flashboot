@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: $
 
 # Create dir if not there
 mkdir -p obj

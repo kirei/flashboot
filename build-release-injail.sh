@@ -1,6 +1,4 @@
 #!/bin/sh
-#
-# $Id: $
 
 export DESTDIR=/
 export BUILDCONF=/mk-mini.conf

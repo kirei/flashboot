@@ -1,37 +1,95 @@
 #!/bin/sh
 
-set -xe
+CWD=`pwd`
+WORKDIR=sandbox
 
-BASE=`pwd`
+export CWD WORKDIR
 
-BSDSRCDIR=${BSDSRCDIR:-/usr/src}
-BSDOBJDIR=${BSDOBJDIR:-${BASE}/flash-obj}
-DESTDIR=${DESTDIR:-${BASE}/flash-dist}
+# Update for each new release
+SHORTREL="49"
+LONGREL="4.9"
 
-_MINI=-mini
+# No need to change anything below this line for new OS releases!
 
-RELEASEDIR=${BASE}/release${_MINI}
-MAKECONF=${BASE}/mk${_MINI}.conf
-SUDO="sudo MAKECONF=${MAKECONF}"
+# Change if ftp.su.se is not the best place to get your shit from!
+URLBASE="http://ftp.su.se/pub/OpenBSD/${LONGREL}"
+PATCHURL="ftp://ftp.openbsd.org/pub/OpenBSD/patches/${LONGREL}/common/*"
 
-export BSDSRCDIR BSDOBJDIR DESTDIR RELEASEDIR MAKECONF SUDO
+echo "Cleaning up previous build.."
+${SUDO} rm -rf ${WORKDIR}
 
-cd ${BSDSRCDIR}
-mkdir -p ${BSDOBJDIR} ${DESTDIR}
+echo "Creating sandbox and diststuff.."
+mkdir -p ${WORKDIR}
+mkdir -p diststuff
 
-if [ "x$1" != "xbuilt" ] ; then
-	${SUDO} rm -rf ${DESTDIR}/*
-	${SUDO} make -k cleandir
-	rm -rf ${BSDOBJDIR}/*
-	
-	make obj
-	cd etc
-	make distrib-dirs
-	cd ..
-	
-	make build
-fi
+echo "Getting current patches.."
+mkdir ${WORKDIR}/patches
+cd ${WORKDIR}/patches
+ftp ${PATCHURL}
+cd ${CWD}
 
-cd etc
-${SUDO} make distribution-etc-root-var
+binfiles="base${SHORTREL}.tgz
+etc${SHORTREL}.tgz
+comp${SHORTREL}.tgz
+man${SHORTREL}.tgz"
+
+srcfiles="src.tar.gz
+sys.tar.gz"
+
+cd diststuff
+echo "Downloading binary release.."
+for file in ${binfiles}; do
+  if [ ! -f ${file} ] ; then 
+    echo "Needed ${file}, didn't find it in current dir so downloading.."
+    ftp ${URLBASE}/i386/${file}
+  fi
+done
+
+echo "Downloading source.."
+for file in ${srcfiles}; do
+  if [ ! -f ${file} ] ; then 
+    echo "Needed ${file}, didn't find it in current dir so downloading.."
+    ftp ${URLBASE}/${file}
+  fi
+done
+
+for file in ${binfiles}; do
+  echo "extracting ${file} to ${WORKDIR}"
+  tar zxpf ${file} -C ../${WORKDIR}
+done
+
+for file in ${srcfiles}; do
+  echo "extracting ${file} to ${WORKDIR}"
+  tar zxpf ${file} -C ../${WORKDIR}/usr/src
+done
+
 cd ..
+
+echo "Setting up environment.."
+
+umount ${CWD}/${WORKDIR}/dev
+rm -rf ${CWD}/${WORKDIR}/dev-orig
+mv ${CWD}/${WORKDIR}/dev ${CWD}/${WORKDIR}/dev-orig
+mkdir ${CWD}/${WORKDIR}/dev
+mount_mfs -o nosuid -s 32768 swap ${CWD}/${WORKDIR}/dev
+cp -p ${CWD}/${WORKDIR}/dev-orig/MAKEDEV ${CWD}/${WORKDIR}/dev/MAKEDEV
+cd ${CWD}/${WORKDIR}/dev
+./MAKEDEV std
+cp -p ${CWD}/mk-mini.conf ${CWD}/${WORKDIR}/mk-mini.conf
+cp -p ${CWD}/build-release-injail.sh ${CWD}/${WORKDIR}/
+
+# Don't want anything mounted to /mnt when we starts
+umount /mnt
+
+echo "Going into chroot to build.."
+/usr/sbin/chroot ${CWD}/${WORKDIR} build-release-injail.sh
+
+sleep 4 
+cd
+rm -rf ${CWD}/${WORKDIR}/dev/*
+umount ${CWD}/${WORKDIR}/dev
+
+echo "DONE! Now build kernel."
+
+exit
+
