@@ -1,3 +1,10 @@
+20110811
+ - (rancor) Builds within chroot. Large update of building scripts
+            since OpenBSD 4.8 and later since it does not longer builds to
+            custom destination.
+ - (rancor) GENERIC-RD is merged with OpenBSD 4.9 GENERIC,v 1.709
+ - (rancor) Ram disk kernel is now 48 Mb
+
 20100317
  - (jakob) remove brconfig(8), now included in ifconfig(8)
 
