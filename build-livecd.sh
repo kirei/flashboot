@@ -82,11 +82,12 @@ gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
 
 # Clean up
 rm -rf ${CWD}/${WORKDIR}/dev/*
-rm -r ${CWD}/obj/*
+rm -rf ${CWD}/obj/*
 rm -f list.temp
 rm -f $KERNEL
 
 # Move kernel files from sandbox to the "old" location as before chroot
+mkdir ${CWD}/obj
 mv ${CWD}/${WORKDIR}/obj/* ${CWD}/obj/
 
 # Done
@@ -94,7 +95,6 @@ echo "Your kernel is stored here ${CWD}/obj/"
 
 # Prepare directory for creating cd image
 
-rm -rf ${CWD}/${WORKDIR}/live_cd/*
 mkdir -p ${CWD}/${WORKDIR}/live_cd/etc
 cp ${CWD}/${WORKDIR}/usr/mdec/cdbr ${CWD}/${WORKDIR}/live_cd/cdbr
 cp ${CWD}/${WORKDIR}/usr/mdec/cdboot ${CWD}/${WORKDIR}/live_cd/cdboot
