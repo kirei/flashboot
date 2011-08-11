@@ -77,29 +77,29 @@ Here are the basic steps you need to take.
 4. Install obj/bsd.gz to the root of the boot device as bsd
 5. Ensure that installboot has been run on the boot media
 
-First, download the source from ftp (or a cd) and install it in /usr/src
+First, make sure all building scripts has the execute bit set for
+you and all other (chmod ugo+x build-*).
 
-    # cd /usr/src
-    # tar xzf sys.tar.gz
-    # tar xzf src.tar.gz
+Next, edit release.sh and change SHORTREL and LONGREL to
+match the version you want to build. You should also change
+URLBASE to match a mirror near you. 
 
-Most of this work can be done for you using mk-mini.conf and  
-build-release.sh. The build-release.sh is prepped so that if you
-execute it, it will build the dynamic release in the current dir.
-If you are storing your src & sys-folders somewhere else, then
-you will have to edit build-release.sh. This build can take a very
-long time. (Make sure you run this in the flashdist-directory)
+build-release will download, patch and build userland automaticly
 
-    # sh ./build-release.sh
+This build can take a very long time. Make sure you run this in the 
+blashboot-directory and with sudo since the script needs to be able
+to mount devices.
+
+    # sudo ./build-release.sh
 
 When the building is done you should have a fully dynamic release in
-flash-disk and flash-obj. Now it's time to make your kernel. The
+sandbox. Now it's time to make your kernel. The
 build-kernel.sh takes a kernel-config as a parameter. Currently
 COMMELL-LE564, GENERIC-RD, NTFS, SOEKRIS4501, SOEKRIS4521,
 SOEKRIS4801, SOEKRIS5501 and WRAP12 configs are provided. You can
 easily make your own by copying one of the existing. 
     
-    # sh ./build-kernel.sh WRAP12
+    # sudo ./build-kernel.sh WRAP12
 
 The kernel is then stored under the obj/ directory. The use of
 a gzipped kernel is preferred. The bootloader automatically extracts
@@ -168,20 +168,22 @@ on a x86 PC, first read the build instructions above. Step 1 and 2
 must be successfull and in step 3 use the build-livecd.sh script with 
 the GENERIC-RD kernel config.
 
-    # sh ./build-livecd.sh GENERIC-RD
+    # sudo ./build-livecd.sh GENERIC-RD
 
 The build-live_cd.sh script will create the directory live_cd before
 creating the image. Everything in this directory will be included on the
 cd. The files cdbr, cdboot etc/boot.conf is required for booting. To
-customize the cd with additional data, create the directory live_cd in
-advance and populate with data and modify rc.{init|more} as needed.
+customize the cd with additional data, create the directory live_cd
+under the sandbox directory  in advance and populate with data and 
+modify rc.{init|more} as needed.
+
 The build-livecd.sh will use the default flashboot config files 
 and make modifications prior to ramdisk creation. Any customisation to 
 ramdisk setup should be done by editing build-livecd.sh.
 
 If everything worked then you should find a new iso image in 
 obj/live_cd{version}.iso. Without any customisation the iso is roughly 
-9MB in size. Finally... burn the iso with your favorite cd burning 
+21MB in size. Finally... burn the iso with your favorite cd burning 
 program.
 
 
