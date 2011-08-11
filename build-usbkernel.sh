@@ -1,16 +1,15 @@
 #!/bin/sh
 #
-# Builds a 25Mb Kernel to put on a USB-stick
+# Builds a 48MB kernel to put on a USB-stick
 
-BASE=`pwd`
+CWD=`pwd`
+WORKDIR=sandbox
+DISKTAB=disktab.48mb
+NBLKS=98304
 SRCDIR=${BSDSRCDIR:-/usr/src}
-DESTDIR=${DESTDIR:-${BASE}/flash-dist}
-SUDO=sudo
+DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
 
-DISKTAB=disktab.20mb
-NBLKS=40960
-
-export SRCDIR DESTDIR SUDO
+export SRCDIR DESTDIR CWD WORKDIR DISKTAB NBLKS
 
 # Don't start without a kernel as a parameter
 if [ "$1" = "" ]; then
@@ -24,34 +23,71 @@ if [ ! -r $1 ]; then
   exit 1
 fi
 
-# Create dir if not there
-mkdir -p obj
-
-# Create a templist 
-cat list list.largekernel > list.temp
-
-# Modify list.temp to use fstab.initial.iso and
-# add mount_cd9660.
-cat list.temp | sed 's/fstab.initial/fstab.initial.usb/' > list.temp
+# Quick test to see if sandbox exist
+if ! [ -d ${CWD}/${WORKDIR}/dev  ]; then
+  echo "You must build your release first. Run sudo ./build-release.sh"
+  exit
+fi
 
 # Which kernel to use?
 export KERNEL=$1.LARGE
 
 # Create the kernelfile (with increased MINIROOTSIZE)
-grep -v MINIROOTSIZE $1 > $KERNEL
-echo "option MINIROOTSIZE=${NBLKS}" >> $KERNEL
+grep -v MINIROOTSIZE $1 > ${CWD}/${WORKDIR}/${KERNEL}
+echo "option MINIROOTSIZE=${NBLKS}" >> ${CWD}/${WORKDIR}/${KERNEL}
 
-# Cleanup just in case the previous build failed
-${SUDO} umount /mnt/ 
-${SUDO} vnconfig -u vnd0
-make KCONF=${KERNEL} clean
+echo "Setting up environment.."
 
-# Make kernel
-make KCONF=${KERNEL} LIST=${BASE}/list.temp NBLKS=${NBLKS} DISKPROTO=${BASE}/disktabs/${DISKTAB} $2 $3 $4
+umount ${CWD}/${WORKDIR}/dev
+mount_mfs -o nosuid -s 32768 swap ${CWD}/${WORKDIR}/dev
+cp -p ${CWD}/${WORKDIR}/dev-orig/MAKEDEV ${CWD}/${WORKDIR}/dev/MAKEDEV
+cd ${CWD}/${WORKDIR}/dev
+./MAKEDEV all
+cp -p ${CWD}/$1 ${CWD}/${WORKDIR}/
+cp -p ${CWD}/Makefile ${CWD}/${WORKDIR}/
+cp -p ${CWD}/build-usbkernel-injail.sh ${CWD}/${WORKDIR}/
+cp -p ${CWD}/list ${CWD}/${WORKDIR}/
+cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
+cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
+cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
+cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
+cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
+cp -pR ${CWD}/tools ${CWD}/${WORKDIR}/
+cp -pR ${CWD}/initial-conf ${CWD}/${WORKDIR}/
+rm -r ${CWD}/${WORKDIR}/obj
+mkdir -p ${CWD}/${WORKDIR}/obj
 
-# Cleanup
+# Don't want anything mounted to /mnt when we starts
+umount /mnt
+
+echo "Going into chroot to build kernel"
+/usr/sbin/chroot ${CWD}/${WORKDIR} build-usbkernel-injail.sh
+
+echo "Comming back from chroot"
+
+# Clean up /dev for the creation of file system
+rm -rf ${CWD}/${WORKDIR}/dev/*
+cd ${CWD}/${WORKDIR}
+umount ${CWD}/${WORKDIR}/dev
+cp -p ${CWD}/${WORKDIR}/dev-orig/MAKEDEV ${CWD}/${WORKDIR}/dev/MAKEDEV
+
+echo "Building file system"
+cd ${CWD}/${WORKDIR}/
+
+# From Makefile that could not run in a chroot
+make mr.fs rdsetroot KCONF=${KERNEL} LIST=${CWD}/${WORKDIR}/list.temp NBLKS=${NBLKS} DISKPROTO=${CWD}/${WORKDIR}/disktabs/${DISKTAB} $2 $3 $4
+cp ${CWD}/${WORKDIR}/obj/bsd ${CWD}/${WORKDIR}/obj/bsd.rd
+${CWD}/${WORKDIR}/obj/rdsetroot ${CWD}/${WORKDIR}/obj/bsd.rd < ${CWD}/${WORKDIR}/obj/mr.fs
+gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
+
+# Clean up
+rm -rf ${CWD}/${WORKDIR}/dev/*
+rm -r ${CWD}/obj/*
 rm -f list.temp
 rm -f $KERNEL
 
+# Move kernel files from sandbox to the "old" location as before chroot
+mv ${CWD}/${WORKDIR}/obj/* ${CWD}/obj/
+
 # Done
-echo "Your kernel is stored here ${BASE}/obj/"
+echo "Your kernel is stored here ${CWD}/obj/"
