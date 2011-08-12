@@ -9,7 +9,7 @@ This is a small infrastructure to build minimal OpenBSD installations
 suitable for booting of flash and USB devices. This is derived from the
 scripts and tools used to build the OpenBSD installation media.
 
-The system builds a ram-disk kernel (bsd.gz) with a reasonably
+The system builds a ram disk kernel (bsd.gz) with a reasonably
 complete set of daemons and utilities. This file should be installed
 into the root directory of the boot device. Note that this
 infrastructure only builds the kernel image, it is beyond its scope to
@@ -43,7 +43,7 @@ Installation
 ------------
 
 To install flashboot onto your media, you will need to format it and make
-it bootable first. Read the fine boot(8) and installboot(8) manpages for
+it bootable first. Read the fine boot(8) and installboot(8) man pages for
 instructions on how to prepare the media.
 
 Once the media is setup as bootable, you can just copy the kernel image
@@ -84,10 +84,10 @@ Next, edit release.sh and change SHORTREL and LONGREL to
 match the version you want to build. You should also change
 URLBASE to match a mirror near you. 
 
-build-release will download, patch and build userland automaticly
+build-release will download, patch and build userland automatically
 
 This build can take a very long time. Make sure you run this in the 
-blashboot-directory and with sudo since the script needs to be able
+flashboot-directory and with sudo since the script needs to be able
 to mount devices.
 
     # sudo ./build-release.sh
@@ -144,8 +144,8 @@ the distribution and should be sufficient for most needs. But on
 devices that do not have the memory concern, there should be much 
 easier to do build the larger kernel and add stuff as you need them.
 
-Kernelsizes are a problem when piggybacking a ramdisk blob. 
-Kernel+ramdisks larger than 16MB needs to increase the NKPTP in the 
+Kernel sizes are a problem when piggybacking a ramdisk blob. 
+Kernel+ram disks larger than 16MB needs to increase the NKPTP in the 
 kernel config. This is already done for all the kernels and you 
 shouldn't have to do anything as long as you stay under 32MB. The 
 second problem is that kernels larger than about 14MB will use up 
@@ -165,7 +165,7 @@ Creating bootable cd
 
 To create an iso image suitable for booting and running flashboot
 on a x86 PC, first read the build instructions above. Step 1 and 2 
-must be successfull and in step 3 use the build-livecd.sh script with 
+must be successful and in step 3 use the build-livecd.sh script with 
 the GENERIC-RD kernel config.
 
     # sudo ./build-livecd.sh GENERIC-RD
@@ -183,7 +183,7 @@ ramdisk setup should be done by editing build-livecd.sh.
 
 If everything worked then you should find a new iso image in 
 obj/live_cd{version}.iso. Without any customisation the iso is roughly 
-21MB in size. Finally... burn the iso with your favorite cd burning 
+21MB in size. Finally... burn the iso with your favourite cd burning 
 program.
 
 
@@ -191,7 +191,7 @@ Support and bug reporting
 -------------------------
 
 Please send bug reports to djm@mindrot.org or subscribe to the 
-mailinglist flashboot@mindrot.org. I don't have time to support this 
+mailing list flashboot@mindrot.org. I don't have time to support this 
 software, so if you run into problems you are on your own. This code 
 works very well for me, so hopefully it will for you too.
 
