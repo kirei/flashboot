@@ -48,6 +48,7 @@ cp -pR ${CWD}/tools ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/initial-conf ${CWD}/${WORKDIR}/
 rm -r ${CWD}/${WORKDIR}/obj
 mkdir -p ${CWD}/${WORKDIR}/obj
+mkdir -p ${CWD}/obj
 
 # Don't want anything mounted to /mnt when we starts
 umount /mnt
