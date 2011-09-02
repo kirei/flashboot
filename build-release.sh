@@ -54,12 +54,24 @@ for file in ${srcfiles}; do
 done
 
 for file in ${binfiles}; do
-  echo "extracting ${file} to ${WORKDIR}"
+  echo "checking ${file} file integrity"
+  gunzip -t ${file}
+  if [ $? != 0 ] ; then
+   echo "${file} is corrupt! Exiting"
+   exit
+  fi
+  echo "file integrity OK, extracting ${file} to ${WORKDIR}"
   tar zxpf ${file} -C ../${WORKDIR}
 done
 
 for file in ${srcfiles}; do
-  echo "extracting ${file} to ${WORKDIR}"
+  echo "checking ${file} file integrity"
+  gunzip -t ${file}
+  if [ $? != 0 ] ; then
+   echo "${file} is corrupt! Exiting"
+   exit
+  fi
+  echo "file integrity OK, extracting ${file} to ${WORKDIR}"
   tar zxpf ${file} -C ../${WORKDIR}/usr/src
 done
 
