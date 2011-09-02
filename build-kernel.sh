@@ -42,7 +42,7 @@ cp -p ${CWD}/list ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
 # Include custom list if exist
-if [ -r list.custom ]; then
+if [ -r ${CWD}/list.custom ]; then
         cp -p ${CWD}/list.custom ${CWD}/${WORKDIR}/
 fi
 cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
