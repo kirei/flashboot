@@ -5,6 +5,10 @@ mkdir -p obj
 
 # Create a templist
 cat list list.largekernel > list.temp
+# Include custom list if exist 
+if [ -r list.custom ]; then
+	cat list.custom >> list.temp
+fi
 
 # Cleanup just in case the previous build failed
 umount /mnt
