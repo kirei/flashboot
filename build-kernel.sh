@@ -41,6 +41,10 @@ cp -p ${CWD}/build-kernel-injail.sh ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
+# Include custom list if exist
+if [ -r ${CWD}/list.custom ]; then
+        cp -p ${CWD}/list.custom ${CWD}/${WORKDIR}/
+fi
 cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
 cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
@@ -68,7 +72,7 @@ echo "Building file system"
 cd ${CWD}/${WORKDIR}/
 
 # From Makefile that could not run in a chroot
-make mr.fs rdsetroot KCONF=${KERNEL} $2 $3 $4
+make mr.fs rdsetroot KCONF=${KERNEL} LIST=${CWD}/${WORKDIR}/list.temp $2 $3 $4
 cp ${CWD}/${WORKDIR}/obj/bsd ${CWD}/${WORKDIR}/obj/bsd.rd
 ${CWD}/${WORKDIR}/obj/rdsetroot ${CWD}/${WORKDIR}/obj/bsd.rd < ${CWD}/${WORKDIR}/obj/mr.fs
 gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz

@@ -139,6 +139,11 @@ original distribution. If you have decided to go down this road you
 might just as well modify the default configuration located under 
 the initial-conf directory.
 
+The easiest way to add configuration is to add files and folders
+to initial-conf and add list.custom in Flashboot root folder
+where instructions to the build script for each file is provided.
+Look at the included list file to get correct syntax.
+
 The first two alternatives can be done without having to recompile 
 the distribution and should be sufficient for most needs. But on 
 devices that do not have the memory concern, there should be much 

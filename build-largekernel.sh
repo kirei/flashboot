@@ -49,6 +49,10 @@ cp -p ${CWD}/build-largekernel-injail.sh ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
+# Include custom list if exist
+if [ -r ${CWD}/list.custom ]; then
+        cp -p ${CWD}/list.custom ${CWD}/${WORKDIR}/
+fi
 cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
 cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
@@ -83,7 +87,6 @@ gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
 # Clean up
 rm -rf ${CWD}/${WORKDIR}/dev/*
 rm -r ${CWD}/obj/*
-rm -f list.temp
 rm -f $KERNEL
 
 # Move kernel files from sandbox to the "old" location as before chroot
