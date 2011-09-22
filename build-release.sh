@@ -94,7 +94,7 @@ cp -p ${CWD}/build-release-injail.sh ${CWD}/${WORKDIR}/
 umount /mnt
 
 echo "Going into chroot to build.."
-/usr/sbin/chroot ${CWD}/${WORKDIR} build-release-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-release-injail.sh
 
 sleep 4 
 cd

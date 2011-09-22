@@ -58,7 +58,7 @@ mkdir -p ${CWD}/obj
 umount /mnt
 
 echo "Going into chroot to build kernel"
-/usr/sbin/chroot ${CWD}/${WORKDIR} build-kernel-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-kernel-injail.sh
 
 echo "Comming back from chroot"
 
