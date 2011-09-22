@@ -65,7 +65,7 @@ mkdir -p ${CWD}/${WORKDIR}/obj
 umount /mnt
 
 echo "Going into chroot to build kernel"
-/usr/sbin/chroot ${CWD}/${WORKDIR} build-livecd-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-livecd-injail.sh
 
 echo "Comming back from chroot"
 
