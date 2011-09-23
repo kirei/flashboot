@@ -45,7 +45,7 @@ cd ${CWD}/${WORKDIR}/dev
 ./MAKEDEV all
 cp -p ${CWD}/$1 ${CWD}/${WORKDIR}/
 cp -p ${CWD}/Makefile ${CWD}/${WORKDIR}/
-cp -p ${CWD}/build-largekernel-injail.sh ${CWD}/${WORKDIR}/
+cp -p ${CWD}/build-kernel-injail.sh ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
@@ -65,7 +65,7 @@ mkdir -p ${CWD}/${WORKDIR}/obj
 umount /mnt
 
 echo "Going into chroot to build kernel"
-/usr/sbin/chroot ${CWD}/${WORKDIR} build-largekernel-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-kernel-injail.sh
 
 echo "Comming back from chroot"
 

@@ -130,12 +130,8 @@ such as man-pages and files needed only for compiling.
 
 3. Recompile a kernel that suits your needs and that includes or 
 excludes the binaries and libs that you need for your application. 
-Change the list to include extra files. You can also use the script 
-build-largekernel.sh which is an exact copy of the build-kernel.sh 
-with the difference that it creates a 25MB ramdisk instead of a ~15 
-MB kernel. It also includes the content of the list.largekernel-file 
-to include some extra binaries and libs that does not fit in the 
-original distribution. If you have decided to go down this road you 
+Change the list to include extra files. 
+If you have decided to go down this road you 
 might just as well modify the default configuration located under 
 the initial-conf directory.
 
@@ -145,9 +141,7 @@ where instructions to the build script for each file is provided.
 Look at the included list file to get correct syntax.
 
 The first two alternatives can be done without having to recompile 
-the distribution and should be sufficient for most needs. But on 
-devices that do not have the memory concern, there should be much 
-easier to do build the larger kernel and add stuff as you need them.
+the distribution and should be sufficient for most needs.
 
 Kernel sizes are a problem when piggybacking a ramdisk blob. 
 Kernel+ram disks larger than 16MB needs to increase the NKPTP in the 
