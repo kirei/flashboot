@@ -1,3 +1,7 @@
+20110923
+ - (rancor) Removed "normal" kernel and replaced it with large kernel since 
+            there is no longer any sigificant difference in sizes any more
+
 20110811
  - (rancor) Builds within chroot. Large update of building scripts
             since OpenBSD 4.8 and later since it does not longer builds to
