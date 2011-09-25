@@ -15,18 +15,8 @@ TTYSPEED=	19200
 TTYSPEED=	38400
 .endif
 
-# WRAP has an even sillier default console speed than Soekris :)
-.if ${KCONF} == "WRAP12.LARGE"
-TTYSPEED=	38400
-.endif
-
 # Change the default conspeed of Generic to 9600
 .if ${KCONF} == "GENERIC-RD"
-TTYSPEED=	9600
-.endif
-
-# Change the default conspeed of Generic to 9600
-.if ${KCONF} == "GENERIC-RD.LARGE"
 TTYSPEED=	9600
 .endif
 

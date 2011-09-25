@@ -315,3 +315,42 @@ SPECIAL kvm_mkdb -vo ./var/db ${OBJDIR}/bsd
 # Generate flashboot.mtree without time, used when making backups
 SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
 
+# Bellow this entry is the extention of the old large kernel modification, known as list.largekernel
+
+COPY	${DESTDIR}/var/named/etc/named.conf		var/named/etc/named.conf
+COPY	${DESTDIR}/var/named/standard/localhost		var/named/standard/localhost
+COPY	${DESTDIR}/var/named/standard/loopback		var/named/standard/loopback
+COPY	${DESTDIR}/var/named/standard/loopback6.arpa	var/named/standard/loopback6.arpa
+COPY	${DESTDIR}/var/named/etc/root.hint 		var/named/etc/root.hint
+
+COPY	${DESTDIR}/usr/sbin/named		usr/sbin/named
+COPY	${DESTDIR}/usr/sbin/rndc		usr/sbin/rndc
+COPY	${DESTDIR}/usr/sbin/rndc-confgen	usr/sbin/rndc-confgen
+COPY	${DESTDIR}/usr/sbin/dig			usr/sbin/dig
+
+COPY	${DESTDIR}/usr/bin/ldd			usr/bin/ldd
+
+#COPY	${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
+#COPY	${DESTDIR}/usr/sbin/rarpd		usr/sbin/rarpd
+#COPY	${DESTDIR}/usr/sbin/rpc.bootparamd	usr/sbin/rpc.bootparamd
+
+COPY	${DESTDIR}/sbin/mount_msdos		sbin/mount_msdos
+COPY	${DESTDIR}/sbin/kbd			sbin/kbd
+
+# Copy dynamic libs
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib sbin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/bin/* 
+SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/sbin/* 
+
+# Copy extra dynamic libs
+SPECIAL sh ${CURDIR}/tools/wantlibcopy.sh ${DESTDIR} ./usr/lib pthread ssl kvm wrap
+
+# Make some devices needed by largekernel
+SPECIAL cd dev; ./MAKEDEV arandom
+
+# Create mountpoint for cdrom
+SPECIAL mkdir ./cd
+
+# Generate flashboot.mtree again.
+SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
+

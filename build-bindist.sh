@@ -69,3 +69,4 @@ mv image.gz bindist/${DISTNAME}.image
 DISTNAME=LIVECD
 sh ./build-livecd.sh GENERIC-RD
 mv obj/live_cd*.iso bindist/
+echo "All images, iso and kernels has been moved to bindist"
