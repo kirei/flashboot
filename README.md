@@ -1,6 +1,5 @@
 _Please read this entire file before asking for help or reporting bugs_
 
----
 
 # Introduction
 
@@ -173,4 +172,4 @@ size. Finally... burn the iso with your favourite cd burning program.
 # Support and bug reporting
 
 Please submit bug reports via the mailing list flashboot@mindrot.org or via
-the [GitHub issue tracker](https://github.com/openbsd/flashboot/issues)
+the [GitHub issue tracker](https://github.com/openbsd/flashboot/issues).
