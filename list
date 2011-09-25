@@ -315,7 +315,7 @@ SPECIAL kvm_mkdb -vo ./var/db ${OBJDIR}/bsd
 # Generate flashboot.mtree without time, used when making backups
 SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
 
-# Bellow this entry is the extention of the old large kernel modification, known as list.largekerneL
+# Bellow this entry is the extention of the old large kernel modification, known as list.largekernel
 
 COPY	${DESTDIR}/var/named/etc/named.conf		var/named/etc/named.conf
 COPY	${DESTDIR}/var/named/standard/localhost		var/named/standard/localhost
