@@ -30,7 +30,7 @@ if ! [ -d ${CWD}/${WORKDIR}/dev  ]; then
 fi
 
 # Which kernel to use?
-export KERNEL=$1.LARGE
+export KERNEL=$1
 
 # Create the kernelfile (with increased MINIROOTSIZE)
 grep -v MINIROOTSIZE $1 > ${CWD}/${WORKDIR}/${KERNEL}
@@ -47,7 +47,6 @@ cp -p ${CWD}/$1 ${CWD}/${WORKDIR}/
 cp -p ${CWD}/Makefile ${CWD}/${WORKDIR}/
 cp -p ${CWD}/build-livecd-injail.sh ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list ${CWD}/${WORKDIR}/
-cp -p ${CWD}/list.largekernel ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
 # Include custom list if exist
 if [ -r ${CWD}/list.custom ]; then

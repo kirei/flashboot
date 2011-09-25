@@ -4,7 +4,7 @@
 mkdir -p obj
 
 # Create a templist
-cat list list.largekernel > list.temp
+cat list > list.temp
 
 # Modify list.temp to use fstab.initial.usb and
 # add mount_cd9660.
