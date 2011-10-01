@@ -55,7 +55,7 @@ MTREE_CUST=	${.CURDIR}/mtree.conf
 MOUNT_POINT=	/mnt
 SRCDIR?=	/usr/src
 KSRC=		${SRCDIR}/sys
-VND=		svnd0
+VND=		vnd0
 DESTDIR?=	/
 
 # Shouldn't need to touch these
