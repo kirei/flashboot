@@ -16,12 +16,12 @@ TTYSPEED=${TTYSPEED:-19200}
 # drive geometry information -- get the right one for your flash!!
 
 # 128 MB cards
-totalsize=1994385       # "total sectors:"
+totalsize=250880       # "total sectors:"
 bytessec=512           # "bytes/sector:"
-sectorstrack=63        # "sectors/track:"
-sectorscylinder=16065    # "sectors/cylinder:"
-trackscylinder=255       # "tracks/cylinder:"
-cylinders=124          # "cylinders:"
+sectorstrack=32        # "sectors/track:"
+sectorscylinder=256    # "sectors/cylinder:"
+trackscylinder=8       # "tracks/cylinder:"
+cylinders=980          # "cylinders:"
 
 # 256 MB cards
 #totalsize=501760       # "total sectors:"

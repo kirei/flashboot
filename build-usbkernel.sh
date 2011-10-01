@@ -48,6 +48,10 @@ cp -p ${CWD}/Makefile ${CWD}/${WORKDIR}/
 cp -p ${CWD}/build-usbkernel-injail.sh ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list ${CWD}/${WORKDIR}/
 cp -p ${CWD}/list.recovery ${CWD}/${WORKDIR}/
+# Include custom list if exist
+if [ -r ${CWD}/list.custom ]; then
+	cp -p ${CWD}/list.custom ${CWD}/${WORKDIR}/
+fi
 cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
 cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
@@ -55,12 +59,13 @@ cp -pR ${CWD}/tools ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/initial-conf ${CWD}/${WORKDIR}/
 rm -r ${CWD}/${WORKDIR}/obj
 mkdir -p ${CWD}/${WORKDIR}/obj
+mkdir -p ${CWD}/obj
 
 # Don't want anything mounted to /mnt when we starts
 umount /mnt
 
 echo "Going into chroot to build kernel"
-/usr/sbin/chroot ${CWD}/${WORKDIR} build-usbkernel-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-usbkernel-injail.sh
 
 echo "Comming back from chroot"
 
@@ -82,7 +87,7 @@ gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
 # Clean up
 rm -rf ${CWD}/${WORKDIR}/dev/*
 rm -r ${CWD}/obj/*
-rm -f list.temp
+#rm -f list.temp
 rm -f $KERNEL
 
 # Move kernel files from sandbox to the "old" location as before chroot
