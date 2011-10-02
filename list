@@ -6,6 +6,7 @@ SPECIAL cd dev; ./MAKEDEV ttyU0 ttyU1
 SPECIAL cd dev; ./MAKEDEV tun0 tun1 tun2 tun3 tun4 tun5 tun6 tun7
 SPECIAL cd dev; ./MAKEDEV bpf0 bpf1 bpf2 bpf3 bpf4 bpf5 bpf6 bpf7 
 SPECIAL cd dev; ./MAKEDEV pf crypto fd wsmux wscons apm local gpio
+SPECIAL cd dev; ./MAKEDEV sd1 sd2 sd3 sd4 sd5 sd6 sd7 sd8 sd9
 
 COPY	${DESTDIR}/etc/disktab			etc/disktab
 COPY	${DESTDIR}/etc/login.conf		etc/login.conf

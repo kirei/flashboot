@@ -1,2 +1,2 @@
 /dev/rd0a	/	ffs	rw				0 0
-/dev/sd0a	/flash	ffs	ro,sync,noatime			0 1
+0123456789abcdef.a	/flash	ffs	ro,sync,noatime			0 1

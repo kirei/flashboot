@@ -87,7 +87,7 @@ gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
 # Clean up
 rm -rf ${CWD}/${WORKDIR}/dev/*
 rm -r ${CWD}/obj/*
-#rm -f list.temp
+rm -f list.temp
 rm -f $KERNEL
 
 # Move kernel files from sandbox to the "old" location as before chroot

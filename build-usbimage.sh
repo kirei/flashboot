@@ -107,6 +107,15 @@ ${SUDO} disklabel -R $DEVICE $TEMPFILE
 rm $TEMPFILE
 
 echo ""
+echo "Setting duid with disklabel..."
+${SUDO} disklabel -E $DEVICE << __EOC >/dev/null
+i
+0123456789abcdef
+write
+quit
+__EOC
+
+echo ""
 echo "Creating new filesystem..."
 ${SUDO} newfs -q /dev/r${DEVICE}a
 
