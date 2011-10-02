@@ -12,7 +12,7 @@ fi
 
 # Cleanup just in case the previous build failed
 umount /mnt
-vnconfig -u vnd0
+vnconfig -u svnd0
 
 make KCONF=${KERNEL} clean
 

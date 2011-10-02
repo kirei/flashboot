@@ -5,7 +5,7 @@ SRCDIR=${BSDSRCDIR:-/usr/src}
 DESTDIR=${DESTDIR:-${BASE}/sandbox}
 KERNELFILE=${KERNELFILE:-${BASE}/obj/bsd.gz}
 SUDO=sudo
-DEVICE=vnd0
+DEVICE=svnd0
 MOUNTPOINT=/mnt
 TEMPFILE=/tmp/build-diskimage.tmp.$$
 
