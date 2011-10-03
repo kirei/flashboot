@@ -8,6 +8,7 @@ SUDO=sudo
 DEVICE=svnd0
 MOUNTPOINT=/mnt
 TEMPFILE=/tmp/build-diskimage.tmp.$$
+DUID=${2}
 
 # This is for boot.conf and should match the kernel ttyspeed.
 # Which should be 9600 for GENERIC-RD, 38400 for WRAP12 and 19200 for the rest.
@@ -39,10 +40,9 @@ cylinders=980          # "cylinders:"
 #trackscylinder=16      # "tracks/cylinder:"
 #cylinders=994          # "cylinders:"
 
-
 # Don't start without a imagefile as a parameter
-if [ "$1" = "" ]; then
-  echo "usage: $0 imagefile"
+if [ "$1" = "" ] || [ "$DUID" = "" ]; then
+  echo "usage: $0 imagefile duid"
   exit 1	
 fi
 
@@ -53,6 +53,12 @@ if [ ! -r $KERNELFILE ]; then
   echo "ERROR! $KERNELFILE does not exist or is not readable."
   exit 1
 fi
+
+# Check DUID format (hex and 16 char long string)
+if [[ "$DUID" != +([[:xdigit:]]) ]] || [[ ${#DUID} != 16 ]]; then
+  echo "DUID: ${DUID} is not a 16-character hexadecimal string"
+  exit
+fi;
 
 echo "Cleanup if something failed the last time... (ignore any not currently mounted and Device not configured warnings)"
 ${SUDO} umount $MOUNTPOINT
@@ -107,10 +113,10 @@ ${SUDO} disklabel -R $DEVICE $TEMPFILE
 rm $TEMPFILE
 
 echo ""
-echo "Setting duid with disklabel..."
+echo "Setting duid to ${DUID} with disklabel..."
 ${SUDO} disklabel -E $DEVICE << __EOC >/dev/null
 i
-0123456789abcdef
+${DUID}
 write
 quit
 __EOC

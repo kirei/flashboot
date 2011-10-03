@@ -2,18 +2,31 @@
 #
 # Builds a 48MB kernel to put on a USB-stick
 
+# Functions
+function getrandomduid {
+	# Generates a 16 chars long hex string
+        tempduid=`cat /dev/urandom | tr -dc "a-f0-9" | fold -w 16 | head -1`
+        echo ${tempduid}
+}
+
 CWD=`pwd`
 WORKDIR=sandbox
 DISKTAB=disktab.48mb
 NBLKS=98304
 SRCDIR=${BSDSRCDIR:-/usr/src}
 DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
-
-export SRCDIR DESTDIR CWD WORKDIR DISKTAB NBLKS
+DUID=${2:-`getrandomduid`}
+export SRCDIR DESTDIR CWD WORKDIR DISKTAB NBLKS DUID
 
 # Don't start without a kernel as a parameter
 if [ "$1" = "" ]; then
-  echo "usage: $0 kernel"
+  echo "usage: $0 kernel [duid]"
+  echo
+  echo "The options are as follows:"
+  echo "[duid]:		Optional 16-character hexadecimal string used as"
+  echo "		disklabel UID for the storage device mounted as /flash"
+  echo "		If unset a random number is generated and printed at" 
+  echo "		the end of the script"
   exit 1
 fi
 
@@ -28,6 +41,12 @@ if ! [ -d ${CWD}/${WORKDIR}/dev  ]; then
   echo "You must build your release first. Run sudo ./build-release.sh"
   exit
 fi
+
+# Check DUID format (hex and 16 char long string)
+if [[ "$DUID" != +([[:xdigit:]]) ]] || [[ ${#DUID} != 16 ]]; then
+  echo "DUID: ${DUID} is not a 16-character hexadecimal string"
+  exit
+fi;
 
 # Which kernel to use?
 export KERNEL=$1
@@ -65,7 +84,7 @@ mkdir -p ${CWD}/obj
 umount /mnt
 
 echo "Going into chroot to build kernel"
-/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-usbkernel-injail.sh
+/usr/sbin/chroot ${CWD}/${WORKDIR} ./build-usbkernel-injail.sh ${DUID}
 
 echo "Comming back from chroot"
 
@@ -79,7 +98,7 @@ echo "Building file system"
 cd ${CWD}/${WORKDIR}/
 
 # From Makefile that could not run in a chroot
-make mr.fs rdsetroot KCONF=${KERNEL} LIST=${CWD}/${WORKDIR}/list.temp NBLKS=${NBLKS} DISKPROTO=${CWD}/${WORKDIR}/disktabs/${DISKTAB} $2 $3 $4
+make mr.fs rdsetroot KCONF=${KERNEL} LIST=${CWD}/${WORKDIR}/list.temp NBLKS=${NBLKS} DISKPROTO=${CWD}/${WORKDIR}/disktabs/${DISKTAB}
 cp ${CWD}/${WORKDIR}/obj/bsd ${CWD}/${WORKDIR}/obj/bsd.rd
 ${CWD}/${WORKDIR}/obj/rdsetroot ${CWD}/${WORKDIR}/obj/bsd.rd < ${CWD}/${WORKDIR}/obj/mr.fs
 gzip -c9 ${CWD}/${WORKDIR}/obj/bsd.rd > ${CWD}/${WORKDIR}/obj/bsd.gz
@@ -95,3 +114,6 @@ mv ${CWD}/${WORKDIR}/obj/* ${CWD}/obj/
 
 # Done
 echo "Your kernel is stored here ${CWD}/obj/"
+echo "The UID that are used in the ramdisk kernel is ${DUID}"
+echo "You *MUST* pass this UID to build-usbimage.sh as the second parameter"
+echo "or the image will fail to mount /flash."
