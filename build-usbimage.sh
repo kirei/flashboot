@@ -11,10 +11,6 @@ MOUNTPOINT=/mnt
 TEMPFILE=/tmp/build-diskimage.tmp.$$
 DUID=${2}
 
-# This is for boot.conf and should match the kernel ttyspeed.
-# Which should be 9600 for GENERIC-RD, 38400 for WRAP12 and 19200 for the rest.
-TTYSPEED=${TTYSPEED:-19200}
-
 # drive geometry information -- get the right one for your flash!!
 
 # 128 MB cards
@@ -140,7 +136,7 @@ echo "Copying bsd kernel, boot blocks and /etc/boot.conf..."
 ${SUDO} cp ${DESTDIR}/usr/mdec/boot ${MOUNTPOINT}/boot
 ${SUDO} cp ${KERNELFILE} ${MOUNTPOINT}/bsd
 ${SUDO} mkdir ${MOUNTPOINT}/etc
-${SUDO} sed "/^stty/s/19200/${TTYSPEED}/" < ${CWD}/${WORKDIR}/initial-conf/boot.conf > ${MOUNTPOINT}/etc/boot.conf
+${SUDO} cp ${CWD}/${WORKDIR}/initial-conf/boot.conf.usb ${MOUNTPOINT}/etc/boot.conf
 
 echo ""
 echo "Installing boot blocks..."
