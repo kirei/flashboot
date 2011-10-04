@@ -1,8 +1,9 @@
 #!/bin/sh
 
 CWD=`pwd`
+WORKDIR=sandbox
 SRCDIR=${BSDSRCDIR:-/usr/src}
-DESTDIR=${DESTDIR:-${CWD}/sandbox}
+DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
 KERNELFILE=${KERNELFILE:-${CWD}/obj/bsd.gz}
 SUDO=sudo
 DEVICE=svnd0
