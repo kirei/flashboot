@@ -1,9 +1,9 @@
 #!/bin/sh
 
-BASE=`pwd`
+CWD=`pwd`
 SRCDIR=${BSDSRCDIR:-/usr/src}
-DESTDIR=${DESTDIR:-${BASE}/sandbox}
-KERNELFILE=${KERNELFILE:-${BASE}/obj/bsd.gz}
+DESTDIR=${DESTDIR:-${CWD}/sandbox}
+KERNELFILE=${KERNELFILE:-${CWD}/obj/bsd.gz}
 SUDO=sudo
 DEVICE=svnd0
 MOUNTPOINT=/mnt
@@ -122,7 +122,7 @@ echo "Copying bsd kernel, boot blocks and /etc/boot.conf..."
 ${SUDO} cp ${DESTDIR}/usr/mdec/boot ${MOUNTPOINT}/boot
 ${SUDO} cp ${KERNELFILE} ${MOUNTPOINT}/bsd
 ${SUDO} mkdir ${MOUNTPOINT}/etc
-${SUDO} sed "/^stty/s/19200/${TTYSPEED}/" < ${BASE}/initial-conf/boot.conf > ${MOUNTPOINT}/etc/boot.conf
+${SUDO} sed "/^stty/s/19200/${TTYSPEED}/" < ${CWD}/initial-conf/boot.conf > ${MOUNTPOINT}/etc/boot.conf
 
 echo ""
 echo "Installing boot blocks..."
