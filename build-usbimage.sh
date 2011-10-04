@@ -60,6 +60,8 @@ if [[ "$DUID" != +([[:xdigit:]]) ]] || [[ ${#DUID} != 16 ]]; then
   exit
 fi;
 
+echo "Building usb image with duid ${DUID}..."
+
 echo "Cleanup if something failed the last time... (ignore any not currently mounted and Device not configured warnings)"
 ${SUDO} umount $MOUNTPOINT
 ${SUDO} vnconfig -u $DEVICE
@@ -113,7 +115,7 @@ ${SUDO} disklabel -R $DEVICE $TEMPFILE
 rm $TEMPFILE
 
 echo ""
-echo "Setting duid to ${DUID} with disklabel..."
+echo "Using disklabel to set duid to ${DUID}..."
 ${SUDO} disklabel -E $DEVICE << __EOC >/dev/null
 i
 ${DUID}
