@@ -55,7 +55,7 @@ COPY	${OBJDIR}/termdefs/usr/share/misc/termcap.db	usr/share/misc/
 COPY	${OBJDIR}/termdefs/usr/share/misc/terminfo.db	usr/share/misc/
 
 # Customised startup scripts and support files
-COPY	/dev/null				etc/dhclient.conf
+COPY	${CURDIR}/initial-conf/dhclient.conf	etc/dhclient.conf
 COPY	${CURDIR}/initial-conf/backupconfig	bin/backupconfig
 COPY	${CURDIR}/initial-conf/backup.conf	etc/backup.conf
 COPY	${CURDIR}/initial-conf/createconfig	bin/createconfig
