@@ -1,3 +1,0 @@
-load kernels as 16Mb
- - will avoid isadma problems
- - need to modify kernel and boot loader
