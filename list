@@ -7,6 +7,7 @@ SPECIAL cd dev; ./MAKEDEV tun0 tun1 tun2 tun3 tun4 tun5 tun6 tun7
 SPECIAL cd dev; ./MAKEDEV bpf0 bpf1 bpf2 bpf3 bpf4 bpf5 bpf6 bpf7 
 SPECIAL cd dev; ./MAKEDEV pf crypto fd wsmux wscons apm local gpio
 SPECIAL cd dev; ./MAKEDEV sd1 sd2 sd3 sd4 sd5 sd6 sd7 sd8 sd9
+SPECIAL cd dev; ./MAKEDEV arandom
 
 COPY	${DESTDIR}/etc/disktab			etc/disktab
 COPY	${DESTDIR}/etc/login.conf		etc/login.conf
@@ -19,12 +20,18 @@ COPY	${DESTDIR}/etc/shells			etc/shells
 COPY	${DESTDIR}/etc/ksh.kshrc		etc/ksh.kshrc
 COPY	${DESTDIR}/etc/pf.os			etc/pf.os
 COPY	${DESTDIR}/usr/share/zoneinfo/GMT	etc/localtime
-#COPY	${DESTDIR}/var/named/etc/named.conf	var/named/etc/named.conf
-#COPY	/dev/null				var/named/etc/rndc.key
-#COPY	${DESTDIR}/var/named/standard/localhost var/named/standard/localhost
-#COPY	${DESTDIR}/var/named/standard/loopback	var/named/standard/loopback
-#COPY	${DESTDIR}/var/named/standard/loopback6.arpa var/named/standard/loopback6.arpa
-#COPY	${DESTDIR}/var/named/etc/root.hint	var/named/etc/root.hint
+COPY    ${DESTDIR}/var/named/etc/named.conf             var/named/etc/named.conf
+COPY    ${DESTDIR}/var/named/standard/localhost         var/named/standard/localhost
+COPY    ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
+COPY    ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
+COPY    ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
+COPY    ${DESTDIR}/usr/sbin/named               usr/sbin/named
+COPY    ${DESTDIR}/usr/sbin/rndc                usr/sbin/rndc
+COPY    ${DESTDIR}/usr/sbin/rndc-confgen        usr/sbin/rndc-confgen
+COPY    ${DESTDIR}/usr/sbin/dig                 usr/sbin/dig
+COPY    ${DESTDIR}/usr/bin/ldd                  usr/bin/ldd
+COPY    ${DESTDIR}/sbin/mount_msdos             sbin/mount_msdos
+COPY    ${DESTDIR}/sbin/kbd                     sbin/kbd
 COPY	${DESTDIR}/etc/mtree/4.4BSD.dist	etc/mtree/4.4BSD.dist
 SPECIAL chmod 755 etc/netstart
 SPECIAL touch var/cron/cron.deny
@@ -285,6 +292,9 @@ SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/bin/*
 SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/sbin/* 
 SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/libexec/*
 
+# Copy extra dynamic libs
+SPECIAL sh ${CURDIR}/tools/wantlibcopy.sh ${DESTDIR} ./usr/lib pthread ssl kvm wrap
+
 # Set special permissions on some binaries
 SPECIAL chown root.auth		usr/libexec/auth usr/libexec/auth/login_passwd
 SPECIAL chmod 0750		usr/libexec/auth
@@ -316,42 +326,5 @@ SPECIAL kvm_mkdb -vo ./var/db ${OBJDIR}/bsd
 # Generate flashboot.mtree without time, used when making backups
 SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
 
-# Bellow this entry is the extention of the old large kernel modification, known as list.largekernel
-
-COPY	${DESTDIR}/var/named/etc/named.conf		var/named/etc/named.conf
-COPY	${DESTDIR}/var/named/standard/localhost		var/named/standard/localhost
-COPY	${DESTDIR}/var/named/standard/loopback		var/named/standard/loopback
-COPY	${DESTDIR}/var/named/standard/loopback6.arpa	var/named/standard/loopback6.arpa
-COPY	${DESTDIR}/var/named/etc/root.hint 		var/named/etc/root.hint
-
-COPY	${DESTDIR}/usr/sbin/named		usr/sbin/named
-COPY	${DESTDIR}/usr/sbin/rndc		usr/sbin/rndc
-COPY	${DESTDIR}/usr/sbin/rndc-confgen	usr/sbin/rndc-confgen
-COPY	${DESTDIR}/usr/sbin/dig			usr/sbin/dig
-
-COPY	${DESTDIR}/usr/bin/ldd			usr/bin/ldd
-
-#COPY	${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
-#COPY	${DESTDIR}/usr/sbin/rarpd		usr/sbin/rarpd
-#COPY	${DESTDIR}/usr/sbin/rpc.bootparamd	usr/sbin/rpc.bootparamd
-
-COPY	${DESTDIR}/sbin/mount_msdos		sbin/mount_msdos
-COPY	${DESTDIR}/sbin/kbd			sbin/kbd
-
-# Copy dynamic libs
-SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib sbin/* 
-SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/bin/* 
-SPECIAL sh ${CURDIR}/tools/libcopy.sh ${DESTDIR} ./usr/lib usr/sbin/* 
-
-# Copy extra dynamic libs
-SPECIAL sh ${CURDIR}/tools/wantlibcopy.sh ${DESTDIR} ./usr/lib pthread ssl kvm wrap
-
-# Make some devices needed by largekernel
-SPECIAL cd dev; ./MAKEDEV arandom
-
 # Create mountpoint for cdrom
 SPECIAL mkdir ./cd
-
-# Generate flashboot.mtree again.
-SPECIAL mtree -s2121 -x -c -k mode,nlink,size,link,cksum -p ./ > etc/flashboot.mtree
-
