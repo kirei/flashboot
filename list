@@ -25,13 +25,6 @@ COPY    ${DESTDIR}/var/named/standard/localhost         var/named/standard/local
 COPY    ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
 COPY    ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
 COPY    ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
-COPY    ${DESTDIR}/usr/sbin/named               usr/sbin/named
-COPY    ${DESTDIR}/usr/sbin/rndc                usr/sbin/rndc
-COPY    ${DESTDIR}/usr/sbin/rndc-confgen        usr/sbin/rndc-confgen
-COPY    ${DESTDIR}/usr/sbin/dig                 usr/sbin/dig
-COPY    ${DESTDIR}/usr/bin/ldd                  usr/bin/ldd
-COPY    ${DESTDIR}/sbin/mount_msdos             sbin/mount_msdos
-COPY    ${DESTDIR}/sbin/kbd                     sbin/kbd
 COPY	${DESTDIR}/etc/mtree/4.4BSD.dist	etc/mtree/4.4BSD.dist
 SPECIAL chmod 755 etc/netstart
 SPECIAL touch var/cron/cron.deny
