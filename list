@@ -98,7 +98,7 @@ SPECIAL	chmod 755 bin/ro
 
 COPY ${DESTDIR}/usr/sbin/named			usr/sbin/named
 COPY ${DESTDIR}/usr/sbin/rndc			usr/sbin/rndc
-COPY ${DESTDIR}/usr/sbin/rndc-confge		usr/sbin/rndc-confgen
+COPY ${DESTDIR}/usr/sbin/rndc-confgen		usr/sbin/rndc-confgen
 COPY ${DESTDIR}/usr/sbin/dig			usr/sbin/dig
 COPY ${DESTDIR}/usr/bin/ldd			usr/bin/ldd
 COPY ${DESTDIR}/sbin/mount_msdos		sbin/mount_msdos
