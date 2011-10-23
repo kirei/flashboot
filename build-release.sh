@@ -11,7 +11,7 @@ LONGREL="4.9"
 
 # No need to change anything below this line for new OS releases!
 
-# Change if ftp.su.se is not the best place to get your shit from!
+# Change if ftp.su.se is not the best place to get your files from!
 URLBASE="http://ftp.su.se/pub/OpenBSD/${LONGREL}"
 PATCHURL="ftp://ftp.openbsd.org/pub/OpenBSD/patches/${LONGREL}/common/*"
 
