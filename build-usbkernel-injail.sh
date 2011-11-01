@@ -31,7 +31,7 @@ mv initial-conf/fstab.initial.usb.tmp initial-conf/fstab.initial.usb
 
 # Cleanup just in case the previous build failed
 umount /mnt
-vnconfig -u svnd0
+vnconfig -u vnd0
 make KCONF=${KERNEL} clean
 
 # Make kernel

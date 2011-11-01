@@ -2,7 +2,7 @@
 
 BASE=`pwd`
 MOUNTPOINT=/mnt
-DEVICE=svnd0
+DEVICE=vnd0
 SUDO=sudo
 
 # Don't start without a imagefile as a parameter

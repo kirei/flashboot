@@ -2,7 +2,7 @@
 
 BASE=`pwd`
 MOUNTPOINT=/mnt
-DEVICE=svnd0
+DEVICE=vnd0
 SUDO=sudo
 
 echo "Umounting device and mountpoint..."

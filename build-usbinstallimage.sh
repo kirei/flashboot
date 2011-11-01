@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Update for each new release
-SHORTREL="49"
-LONGREL="4.9"
+SHORTREL="50"
+LONGREL="5.0"
 
 # Update ARC for the architecture to use
 #ARC=i386
@@ -13,8 +13,8 @@ URLBASE="http://ftp.su.se/pub/OpenBSD/${LONGREL}"
 
 # No need to change anything below this line for new OS releases!
 SUDO=sudo
-DEVICE=svnd0
-DEVICECD=svnd1
+DEVICE=vnd0
+DEVICECD=vnd1
 SOURCECD=install${SHORTREL}.iso
 MOUNTPOINT=/mnt/image
 MOUNTPOINTCD=/mnt/cd
