@@ -85,20 +85,25 @@ option          RAMDISK_HOOKS
 #option		MINIROOTSIZE=19456		# disktab.9.5mb
 #option		MINIROOTSIZE=20480		# disktab.10mb
 #option		MINIROOTSIZE=30720		# disktab.12mb
-option          MINIROOTSIZE=98304              # disktab.48mb
-option          NKPTP=16 			# Needed when kernel+ramdisk > 16Mb
+option		MINIROOTSIZE=98304		# disktab.48mb
+option		NKPTP=16 				# Needed when kernel+ramdisk > 16Mb
 
-config          bsd     root on rd0a swap on rd0b and wd0b and wd1b
-pseudo-device   rd              1
+config		bsd		root on rd0a swap on rd0b and wd0b and wd1b
+pseudo-device	rd	1
 
 # No swap, so crank this down
 option		BUFCACHEPERCENT=1
 
 mainbus0 at root
 
-cpu0	at mainbus?
-bios0	at mainbus0
-pcibios0 at bios0 flags 0x0000	# use 0x30 for a total verbose
+cpu0		at mainbus?
+bios0		at mainbus0
+ioapic*		at mainbus?
+apm0		at bios0 flags 0x0000   # flags 0x0101 to force protocol version 1.1
+#acpi0		at bios?
+#mpbios0	at bios0
+pcibios0	at bios0 flags 0x0000  # use 0x30 for a total verbose
+#ipmi0		at mainbus? disable     # IPMI
 
 isa0	at mainbus0
 pci*	at mainbus0
