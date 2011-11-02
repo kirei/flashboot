@@ -14,41 +14,75 @@ option		KTRACE		# system call tracing, a la ktrace(1)
 option		KMEMSTATS	# collect malloc(9) statistics
 option		PTRACE		# ptrace(2) system call
 
+#option		KVA_GUARDPAGES	# slow virtual address recycling (+ guarding)
+#option		POOL_DEBUG	# pool corruption detection
+#option		VFSLCKDEBUG	# VFS locking checks
+
 option		CRYPTO		# Cryptographic framework
 
 option		SYSVMSG		# System V-like message queues
 option		SYSVSEM		# System V-like semaphores
 option		SYSVSHM		# System V-like memory sharing
 
-option		FFS		# UFS
-option		MFS		# memory file system
+#option		UVM_SWAP_ENCRYPT# support encryption of pages going to swap
 
+#option		COMPAT_43		# Kernel compatibility with 4.3BSD
+#option		COMPAT_O48		# Kernel compatibility with OpenBSD 4.8
+
+#option		LKM				# loadable kernel modules
+
+option		FFS				# UFS
+#option		FFS2			# UFS2
+#option		FFS_SOFTUPDATES	# Soft updates
+#option		UFS_DIRHASH		# hash large directories
+#option		QUOTA			# UFS quotas
+#option		EXT2FS			# Second Extended Filesystem
+option		MFS				# memory file system
+#option		NNPFS			# NNPFS filesystem
+#option		NFSCLIENT		# Network File System client
+#option		NFSSERVER		# Network File System server
+#option		UDF				# UDF (DVD) file system
+#option		MSDOSFS			# MS-DOS file system
+option		FIFO			# FIFOs; RECOMMENDED
+
+option		SOCKET_SPLICE	# Socket Splicing for TCP
 option		TCP_SACK	# Selective Acknowledgements for TCP
 option		TCP_ECN		# Explicit Congestion Notification for TCP
-#option		TCP_FACK	# Forward Acknowledgements for TCP
 option		TCP_SIGNATURE	# TCP MD5 Signatures, for BGP routing sessions
+#option		TCP_FACK	# Forward Acknowledgements for TCP
 
 option		FDESC		# /dev/fd
-option		FIFO		# FIFOs; RECOMMENDED
 
 option		GATEWAY		# packet forwarding
 option		INET		# IP + ICMP + TCP + UDP
 option		ALTQ		# ALTQ base
 option		INET6		# IPv6 (needs INET)
 option		IPSEC		# IPsec
+#option		KEY		# PF_KEY (implied by IPSEC)
 option		PPP_BSDCOMP	# PPP BSD compression
 option		PPP_DEFLATE
+option		PIPEX		# Pppac IP EXtension, for npppd
 option		MROUTING	# Multicast router
-option		PIM		# Protocol Independent Multicast
+#option		PIM		# Protocol Independent Multicast
+option		MPLS		# Multi-Protocol Label Switching
 
 pseudo-device	pf		# packet filter
 pseudo-device	pflog		# pf log if
 pseudo-device	pfsync		# pf sync if
 pseudo-device	pflow		# pflow export if
-pseudo-device	enc	1	# option IPSEC needs the encapsulation interface
+pseudo-device	enc		# option IPSEC needs the encapsulation interface
 
-pseudo-device	pty	16	# pseudo-terminals
-pseudo-device	systrace 1	# system call tracing device
+pseudo-device	pty		16	# pseudo-terminals
+#pseudo-device	nmea		1	# NMEA 0183 line discipline
+#pseudo-device	msts		1	# MSTS line discipline
+#pseudo-device	endrun		1	# EndRun line discipline
+#pseudo-device	vnd		4	# vnode disk devices
+#pseudo-device	ccd		4	# concatenated disk devices
+#pseudo-device	ksyms		1	# kernel symbols device
+pseudo-device	systrace	1	# system call tracing device
+pseudo-device	wsmux		2
+pseudo-device	crypto		1
+pseudo-device	hotplug		1	# devices hot plugging
 
 # clonable devices
 pseudo-device	 bpfilter	# packet filter
@@ -57,16 +91,21 @@ pseudo-device	 carp		# CARP protocol support
 pseudo-device	 gif		# IPv[46] over IPv[46] tunnel (RFC1933)
 pseudo-device	 gre		# GRE encapsulation interface
 pseudo-device	 loop		# network loopback
-#pseudo-device	 ppp		# PPP
+#pseudo-device	 mpe		# MPLS PE interface
+#pseudo-device	ppp		# PPP
+pseudo-device	pppoe           # PPP over Ethernet (RFC 2516)
+#pseudo-device	pppx            # PPP multiplexer
 #pseudo-device	 sl		# CSLIP
-pseudo-device	 tun		# network tunneling over tty
-pseudo-device	 vlan		# IEEE 802.1Q VLAN
-pseudo-device	 trunk		# Trunking support
+#pseudo-device	sppp	1	# Sync PPP/HDLC
+pseudo-device	trunk		# Trunking support
+pseudo-device	tun		# network tunneling over tty
+pseudo-device	vether		# Virtual ethernet
+pseudo-device	vlan		# IEEE 802.1Q VLAN
 
 # for IPv6
 #pseudo-device	faith	1	# IPv[46] tcp relay translation i/f
 
-pseudo-device	pppoe	1	# PPP over Ethernet (RFC 2516)
+pseudo-device	bio	1	# ioctl multiplexing device
 
 option		BOOT_CONFIG	# add support for boot -c
 
@@ -80,15 +119,15 @@ option		DUMMY_NOPS	# speed hack; recommended
 
 maxusers	32		# estimated number of users
 
-option          RAMDISK_HOOKS
+option		RAMDISK_HOOKS
 #option		MINIROOTSIZE=16384		# disktab.8mb
 #option		MINIROOTSIZE=19456		# disktab.9.5mb
 #option		MINIROOTSIZE=20480		# disktab.10mb
 #option		MINIROOTSIZE=30720		# disktab.12mb
 option		MINIROOTSIZE=98304		# disktab.48mb
 option		NKPTP=16 # Needed when kernel+ramdisk > 16Mb
-config          bsd     root on rd0a swap on rd0b and wd0b and wd1b
-pseudo-device   rd              1
+config		bsd		root on rd0a swap on rd0b and wd0b and wd1b
+pseudo-device	rd	1
 
 # No swap, so crank this down
 option		BUFCACHEPERCENT=1
@@ -97,15 +136,48 @@ mainbus0 at root
 
 cpu0	at mainbus?
 bios0	at mainbus0
-apm0	at bios0 flags 0x0000	# flags 0x0101 to force protocol version 1.1
-pcibios0 at bios0 flags 0x0000	# use 0x30 for a total verbose
+ioapic*	at mainbus?
+apm0	at bios0 flags 0x0000		# flags 0x0101 to force protocol version 1.1
+#acpi0	at bios?
+#mpbios0	at bios0
+pcibios0	at bios0 flags 0x0000	# use 0x30 for a total verbose
+#ipmi0	at mainbus? disable			# IPMI
+#vmt0	at mainbus?					# VMware Tools
+#esm0	at mainbus?					# Dell Embedded Server Management
+amdmsr0	at mainbus?					# MSR access for AMD Geode LX CPUs with GP
+
+#isa0	at mainbus0
+#isa0	at pcib?
+#pci*	at mainbus0
 
 isa0	at mainbus0
 isa0	at pcib?
+#isa0	at amdpcib?
+#isa0	at ichpcib?
+#isa0	at piixpcib?
+#isa0	at gscpcib?
+#isa0	at glxpcib?
+#eisa0	at mainbus0
 pci*	at mainbus0
 
-ohci*   at pci?			# Open Host Controller
-usb*	at ohci?
+#pchb*		at pci?			# PCI-Host bridges
+#ppb*		at pci?			# PCI-PCI bridges
+#pci*		at ppb?
+#pci*		at pchb?
+#pcib*		at pci?			# PCI-ISA bridge
+#amdpcib*	at pci?			# AMD 8111 LPC bridge
+#ichpcib*	at pci?			# Intel ICHx/ICHx-M LPC bridges
+#piixpcib*	at pci?			# Intel PIIX4 PCI-ISA bridge
+#gscpcib*	at pci?			# NS Geode SC1100 PCI-ISA bridge
+#gpio*		at gscpcib?
+#glxpcib*	at pci?			# AMD CS5536 PCI-ISA bridge
+#gpio*		at glxpcib?
+#kate*		at pci?			# AMD K8 temperature sensor
+#km*		at pci?			# AMD K10 temperature sensor
+#amas*		at pci? disable	# AMD memory configuration
+
+ohci*		at pci?			# Open Host Controller
+usb*		at ohci?
 
 option		PCIVERBOSE
 #option		EISAVERBOSE
@@ -120,11 +192,18 @@ ucom*	at uplcom?
 #audio*	at uaudio?
 umass*	at uhub? port ? configuration ? # USB Mass Storage devices
 scsibus* at umass?
-atapiscsi* at umass?
+
+# ATAPI<->SCSI
+atapiscsi*	at wdc?
+atapiscsi*	at pciide?
+
 ugen*	at uhub? port ? configuration ?	# USB Generic driver
 
 pchb*	at pci? 			# PCI-Host bridges
-pci*	at pchb? bus ?
+#pci*	at pchb? bus ?
+pci*	at ppb?
+pci*	at pchb?
+
 pcib*	at pci? 			# PCI-ISA bridge
 ppb*	at pci? 			# PCI-PCI bridges
 pci*	at ppb? bus ?
@@ -177,8 +256,3 @@ san*	at pci?				# Sangoma PCI AFT card
 
 # crypto support
 hifn*	at pci?					# Hi/fn 7751 crypto card
-
-pseudo-device	bio		1	# ioctl multiplexing device
-pseudo-device	wsmux		2
-pseudo-device	crypto		1
-pseudo-device	hotplug		1	# devices hot plugging
