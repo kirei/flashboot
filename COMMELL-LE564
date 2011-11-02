@@ -122,23 +122,28 @@ option		DUMMY_NOPS	# speed hack; recommended
 
 # or use		root on nfs swap on nfs
 #config		bsd	swap generic
-option          RAMDISK_HOOKS
+option		RAMDISK_HOOKS
 #option		MINIROOTSIZE=16384		# disktab.8mb
 #option		MINIROOTSIZE=19456		# disktab.9.5mb
 #option		MINIROOTSIZE=20480		# disktab.10mb
 #option		MINIROOTSIZE=30720		# disktab.12mb
-option          MINIROOTSIZE=98304              # disktab.48mb
-option          NKPTP=16 			# Needed when kernel+ramdisk > 16Mb
-config          bsd     root on rd0a swap on rd0b and wd0b and wd1b
-pseudo-device   rd              1
+option		MINIROOTSIZE=98304		# disktab.48mb
+option		NKPTP=16 			# Needed when kernel+ramdisk > 16Mb
+config		bsd		root on rd0a swap on rd0b and wd0b and wd1b
+pseudo-device	rd	1
 
 mainbus0 at root
 
 cpu0	at mainbus?
 bios0	at mainbus0
-apm0	at bios0 flags 0x0000	# flags 0x0101 to force protocol version 1.1
-pcibios0 at bios0 flags 0x0000	# use 0x30 for a total verbose
-#ipmi0	at mainbus?		# IPMI
+ioapic*	at mainbus?
+apm0	at bios0 flags 0x0000		# flags 0x0101 to force protocol version 1.1
+#acpi0	at bios?
+#mpbios0	at bios0
+pcibios0	at bios0 flags 0x0000	# use 0x30 for a total verbose
+#ipmi0	at mainbus? disable			# IPMI
+#vmt0	at mainbus?					# VMware Tools
+#esm0	at mainbus?					# Dell Embedded Server Management
 
 isa0	at mainbus0
 isa0	at pcib?
@@ -163,7 +168,7 @@ pci*	at ppb?
 pci*	at pchb?
 pcib*	at pci?			# PCI-ISA bridge
 
-viaenv*	at pci?				# VIA VT82C686A hardware monitor
+viapm*	at pci?			# VIA SMBus controller
 
 # USB Controllers
 uhci*	at pci?				# Universal Host Controller (Intel)
@@ -195,7 +200,10 @@ ucom*	at umct?
 ulpt*	at uhub?		# USB Printers
 umass*	at uhub?		# USB Mass Storage devices
 scsibus* at umass?
-atapiscsi* at umass?
+# ATAPI<->SCSI
+wdc0    at isa? port 0x1f0 irq 14 flags 0x00
+atapiscsi* at wdc?
+atapiscsi* at pciide?
 uhidev*	at uhub?		# Human Interface Devices
 #ums*	at uhidev?		# USB mouse
 #wsmouse* at ums? mux 0
