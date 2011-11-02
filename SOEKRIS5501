@@ -126,7 +126,10 @@ ucom*	at uplcom?
 #audio*	at uaudio?
 umass*	at uhub? port ? configuration ? # USB Mass Storage devices
 scsibus* at umass?
-atapiscsi* at umass?
+# ATAPI<->SCSI
+atapiscsi* at wdc?
+atapiscsi* at pciide?
+
 ugen*	at uhub? port ? configuration ?	# USB Generic driver
 
 pchb*	at pci? 			# PCI-Host bridges
