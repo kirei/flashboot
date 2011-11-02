@@ -44,7 +44,7 @@ echo "Downloading install${SHORTREL}.iso..."
 if [ ! -f ${SOURCECD} ] ; then
 	echo "Needed ${SOURCECD}, didn't find it in current dir so downloading.."
 	ftp ${URLBASE}/${ARC}/${SOURCECD}
-elae
+else
 	echo "${SOURCECD} already exist, don't need to download it again"
 fi
 
