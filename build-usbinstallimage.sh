@@ -5,11 +5,11 @@ SHORTREL="50"
 LONGREL="5.0"
 
 # Update ARC for the architecture to use
-#ARC=i386
-ARC=amd64
+ARC=i386
+#ARC=amd64
 
-# Change if ftp.su.se is not the best place to get your files from
-URLBASE="http://ftp.su.se/pub/OpenBSD/${LONGREL}"
+# Change if ftp.eu.openbsd.org is not the best place to get your files from
+URLBASE="http://ftp.eu.openbsd.org/pub/OpenBSD/${LONGREL}"
 
 # No need to change anything below this line for new OS releases!
 SUDO=sudo
@@ -146,10 +146,6 @@ echo "Copying files"
 ${SUDO} cp -R ${MOUNTPOINTCD}/* ${MOUNTPOINT}
 
 echo ""
-echo "gzipping ${IMAGEFILE} to ${IMAGEFILE}.gz..."
-gzip ${IMAGEFILE}
-
-echo ""
 echo "Unmounting and cleaning up..."
 ${SUDO} umount $MOUNTPOINT
 ${SUDO} vnconfig -u $DEVICE
@@ -157,6 +153,10 @@ ${SUDO} umount $MOUNTPOINTCD
 ${SUDO} vnconfig -u $DEVICECD
 ${SUDO} rm -r ${MOUNTPOINT}
 ${SUDO} rm -r ${MOUNTPOINTCD}
+
+echo ""
+echo "gzipping ${IMAGEFILE} to ${IMAGEFILE}.gz..."
+gzip ${IMAGEFILE}
 
 echo ""
 echo "And we are done..."
