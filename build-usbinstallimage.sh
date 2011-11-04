@@ -11,6 +11,10 @@ ARC=i386
 # Change if ftp.eu.openbsd.org is not the best place to get your files from
 URLBASE="http://ftp.eu.openbsd.org/pub/OpenBSD/${LONGREL}"
 
+# Another mirror
+#URLBASE="http://ftp.netbsd.se/OpenBSD/${LONGREL}"
+
+
 # No need to change anything below this line for new OS releases!
 SUDO=sudo
 DEVICE=vnd0
@@ -20,6 +24,7 @@ MOUNTPOINT=/mnt/image
 MOUNTPOINTCD=/mnt/cd
 TEMPFILE=/tmp/build-diskimage.tmp.$$
 KERNELFILE=${KERNELFILE:-${MOUNTPOINTCD}/${LONGREL}/${ARC}/bsd.rd}
+DISTSTUFF=diststuff
 
 # drive geometry information
 
@@ -39,11 +44,14 @@ fi
 
 IMAGEFILE=$1
 
+# Make directory for dist stuff
+mkdir -p ${DISTSTUFF}/${ARC}
+
 echo ""
 echo "Downloading install${SHORTREL}.iso..."
-if [ ! -f ${SOURCECD} ] ; then
+if [ ! -f ${DISTSTUFF}/${ARC}/${SOURCECD} ] ; then
 	echo "Needed ${SOURCECD}, didn't find it in current dir so downloading.."
-	ftp ${URLBASE}/${ARC}/${SOURCECD}
+	ftp -o ${DISTSTUFF}/${ARC}/${SOURCECD} ${URLBASE}/${ARC}/${SOURCECD}
 else
 	echo "${SOURCECD} already exist, don't need to download it again"
 fi
@@ -119,7 +127,7 @@ fi
 
 echo ""
 echo "Mounting the install iso as a device..."
-${SUDO} vnconfig $DEVICECD $SOURCECD
+${SUDO} vnconfig $DEVICECD ${DISTSTUFF}/${ARC}/${SOURCECD}
 
 echo ""
 echo "Mouting install cd to ${MOUNTPOINTCD}..."
