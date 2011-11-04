@@ -16,6 +16,7 @@ URLBASE="http://ftp.eu.openbsd.org/pub/OpenBSD/${LONGREL}"
 
 
 # No need to change anything below this line for new OS releases!
+CWD=`pwd`
 SUDO=sudo
 DEVICE=vnd0
 DEVICECD=vnd1
@@ -47,15 +48,36 @@ IMAGEFILE=$1
 # Make directory for dist stuff
 mkdir -p ${DISTSTUFF}/${ARC}
 
+
 echo ""
-echo "Downloading install${SHORTREL}.iso..."
+echo "Downloading SHA256..."
+if [ ! -f ${DISTSTUFF}/${ARC}/SHA256 ] ; then
+        echo "Needed SHA256, didn't find it in current dir so downloading..."
+        ftp -o ${DISTSTUFF}/${ARC}/SHA256 ${URLBASE}/${ARC}/SHA256
+else
+        echo "SHA256 already exist, don't need to download it again"
+fi
+
+echo ""
+echo "Downloading ${SOURCECD}..."
 if [ ! -f ${DISTSTUFF}/${ARC}/${SOURCECD} ] ; then
-	echo "Needed ${SOURCECD}, didn't find it in current dir so downloading.."
+	echo "Needed ${SOURCECD}, didn't find it in current dir so downloading..."
 	ftp -o ${DISTSTUFF}/${ARC}/${SOURCECD} ${URLBASE}/${ARC}/${SOURCECD}
 else
 	echo "${SOURCECD} already exist, don't need to download it again"
 fi
 
+echo ""
+echo "Calculating sha256 checksum of ${SOURCECD} to verify against SHA256 file..."
+cd ${DISTSTUFF}/${ARC} 
+if [ "$(cat "SHA256" | grep "${SOURCECD}")" = "$(sha256 "${SOURCECD}")" ]; then
+        echo "checksum match!"
+else
+        echo "sha256 sum of ${SOURCECD} does not match, please verifiy!"
+        exit 1
+fi
+cd ${CWD}
+echo ""
 echo "Cleanup if something failed the last time... (ignore any not currently mounted and Device not configured warnings)"
 ${SUDO} umount $MOUNTPOINT
 ${SUDO} vnconfig -u $DEVICE
