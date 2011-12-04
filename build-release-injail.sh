@@ -1,6 +1,5 @@
 #!/bin/sh
 
-export DESTDIR=/
 export BUILDCONF=/mk-mini.conf
 
 cd /usr/src
@@ -19,13 +18,12 @@ set -xe
 cd /usr/src && make obj
 
 # create dirs 
-cd /usr/src/etc && make distrib-dirs
+cd /usr/src/etc && env DESTDIR=/ make distrib-dirs
 
 # build this thing
 cd /usr/src && make build
 
 # Make etc
-cd /usr/src/etc && make distribution-etc-root-var
+cd /usr/src/etc && env DESTDIR=/ make distribution-etc-root-var
 
 exit
-
