@@ -41,7 +41,7 @@ echo "Downloading binary release.."
 for file in ${binfiles}; do
   if [ ! -f ${file} ] ; then 
     echo "Needed ${file}, didn't find it in current dir so downloading.."
-    ftp ${URLBASE}/i386/${file}
+    ftp ${URLBASE}/`machine`/${file}
   fi
 done
 
