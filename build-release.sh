@@ -6,8 +6,8 @@ WORKDIR=sandbox
 export CWD WORKDIR
 
 # Update for each new release
-SHORTREL="50"
-LONGREL="5.0"
+SHORTREL="51"
+LONGREL="5.1"
 
 # No need to change anything below this line for new OS releases!
 
