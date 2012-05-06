@@ -1,4 +1,4 @@
-#	$OpenBSD: GENERIC,v 1.727 2011/08/02 00:53:47 deraadt Exp $
+#	$OpenBSD: GENERIC,v 1.730 2012/01/28 00:39:15 deraadt Exp $
 #
 # For further information on compiling OpenBSD kernels, see the config(8)
 # man page.
@@ -378,20 +378,8 @@ agp*		at viaagp?	# AGP bridges
 #option		DRMDEBUG
 inteldrm*	at vga?		# Intel i915, i945 DRM driver
 drm*		at inteldrm?
-#machdrm*	at vga?		# mach64 (3D Rage Pro, Rage) DRM driver
-#drm*		at machdrm?
-#mgadrm*	at vga?		# Matrox G[24]00, G[45]50 DRM driver
-#drm*		at mgadrm?
-#ragedrm*	at vga?		# ATI Rage 128 DRM driver
-#drm*		at ragedrm?
 radeondrm*	at vga? 	# ATI Radeon DRM driver
 drm*		at radeondrm?
-#savagedrm*	at vga?		# S3 Savage DRM driver
-#drm*		at savagedrm?
-#sisdrm*	at vga?		# SiS DRM driver
-#drm*		at sisdrm?
-#tdfxdrm*	at vga?		# 3dfx (voodoo) DRM driver
-#drm*		at tdfxdrm?
 
 #option		VESABIOSVERBOSE
 #option		VESAFB		# VESA bios framebuffer support for X11
@@ -650,6 +638,7 @@ nsphyter*	at mii?			# NS and compatible PHYs
 qsphy*	at mii?				# Quality Semi QS6612 PHYs
 luphy*	at mii?				# Lucent LU6612 PHY
 sqphy*	at mii?				# Seeq 8x220 PHYs
+tlphy*	at mii?				# ThunderLAN PHYs
 rlphy* at mii?				# RealTek 8139 internal PHYs
 mtdphy* at mii?				# Myson MTD972 PHYs
 dcphy*	at mii?				# Digital Clone PHYs
