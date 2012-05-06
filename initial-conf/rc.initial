@@ -157,6 +157,11 @@ echo "."
 
 touch /var/run/utmp
 
+# Set kbd
+if [ -f /sbin/kbd -a -f /etc/kbdtype ]; then
+        kbd `cat /etc/kbdtype`
+fi
+
 if [ -f /etc/sysctl.conf ]; then
 (
 	# delete comments and blank lines
