@@ -1,5 +1,20 @@
 _Please read this entire file before asking for help or reporting bugs_
 
+# Foreword
+Flashboot is a system built by Damien Miller and others as an adaptation 
+of OpenBSD that's more suited for small flash-based hardware. 
+For most applications you don't have to compile it on you own, 
+you just put the binary release on a flashcard and you're set (somewhat simplified).
+
+Flashboot is not OpenBSD and it's not a official port. We are using the word
+OpenBSD because we don't change any source code other then the scripts that
+are buildning the ram disk kernel and some basic defaults configurations. The
+kernel and the userland is untouched but stripped to the minimum to make
+Flashboots fotprint as smal as possible.
+
+Don't turn to OpenBSD mailing list for support since this project is
+unofficial. Please submit bug reports via the mailing list flashboot@mindrot.org or via
+the [GitHub issue tracker](https://github.com/openbsd/flashboot/issues).
 
 # Introduction
 
