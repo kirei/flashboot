@@ -155,7 +155,8 @@ option          RAMDISK_HOOKS
 #option		MINIROOTSIZE=19456		# disktab.9.5mb
 #option		MINIROOTSIZE=20480		# disktab.10mb
 #option		MINIROOTSIZE=30720		# disktab.15mb
-option          MINIROOTSIZE=98304              # disktab.48mb
+option    MINIROOTSIZE=98304    # disktab.48mb
+#option   MINIROOTSIZE=131072   # disktab.64mb
 option          NKPTP=16 			# Needed when kernel+ramdisk > 16Mb
 
 config          bsd     root on rd0a swap on rd0b and wd0b and wd1b

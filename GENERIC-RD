@@ -32,6 +32,7 @@ option		PROCFS		# /proc
 
 option          RAMDISK_HOOKS
 option          MINIROOTSIZE=98304	# disktab.48mb
+#option          MINIROOTSIZE=131072            # disktab.64mb
 option          NKPTP=16		# Needed when kernel+ramdisk > 16Mb
 config		bsd	root on rd0a swap on rd0b and wd0b and wd1b
 pseudo-device	rd	1
