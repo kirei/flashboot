@@ -1,0 +1,23 @@
+# /dev/rvnd0c:
+type: unknown
+disk: rdroot8
+label: 
+flags:
+bytes/sector: 512
+sectors/track: 128
+tracks/cylinder: 1
+sectors/cylinder: 128
+cylinders: 1024
+total sectors: 131072
+rpm: 3600
+interleave: 1
+trackskew: 0
+cylinderskew: 0
+headswitch: 0		# microseconds
+track-to-track seek: 0	# microseconds
+drivedata: 0 
+
+2 partitions:
+#        size   offset    fstype   [fsize bsize   cpg]
+  a:   131072        0    4.2BSD     1024  4096    20 	# (Cyl.    0 - 1023)
+  c:   131072        0    unused        0     0       	# (Cyl.    0 - 1023)
