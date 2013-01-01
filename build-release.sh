@@ -16,7 +16,7 @@ URLBASE="http://ftp.su.se/pub/OpenBSD/${LONGREL}"
 PATCHURL="ftp://ftp.openbsd.org/pub/OpenBSD/patches/${LONGREL}/common/*"
 
 echo "Cleaning up previous build.."
-${SUDO} rm -rf ${WORKDIR}
+rm -rf ${WORKDIR}
 
 echo "Creating sandbox and diststuff.."
 mkdir -p ${WORKDIR}
