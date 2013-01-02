@@ -155,7 +155,6 @@ COPY ${DESTDIR}/usr/libexec/ld.so		usr/libexec/ld.so
 COPY ${DESTDIR}/usr/libexec/sftp-server		usr/libexec/sftp-server
 COPY ${DESTDIR}/usr/libexec/spamd		usr/libexec/spamd
 COPY ${DESTDIR}/usr/libexec/spamd-setup		usr/libexec/spamd-setup
-COPY ${DESTDIR}/usr/libexec/tftpd		usr/libexec/tftpd
 COPY ${DESTDIR}/usr/sbin/authpf			usr/sbin/authpf
 COPY ${DESTDIR}/usr/sbin/arp			usr/sbin/arp
 COPY ${DESTDIR}/usr/sbin/bgpd			usr/sbin/bgpd
@@ -188,6 +187,7 @@ COPY ${DESTDIR}/usr/sbin/syslogc		usr/sbin/syslogc
 COPY ${DESTDIR}/usr/sbin/syslogd		usr/sbin/syslogd
 COPY ${DESTDIR}/usr/sbin/tcpdrop		usr/sbin/tcpdrop
 COPY ${DESTDIR}/usr/sbin/tcpdump		usr/sbin/tcpdump
+COPY ${DESTDIR}/usr/sbin/tftpd			usr/sbin/tftpd
 COPY ${DESTDIR}/usr/sbin/traceroute		usr/sbin/traceroute
 #COPY ${DESTDIR}/usr/sbin/traceroute6		usr/sbin/traceroute6
 
