@@ -57,6 +57,7 @@ cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
 cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/tools ${CWD}/${WORKDIR}/
+rm -rf ${CWD}/${WORKDIR}/initial-conf
 cp -pR ${CWD}/${CONFDIR} ${CWD}/${WORKDIR}/initial-conf
 rm -r ${CWD}/${WORKDIR}/obj
 mkdir -p ${CWD}/${WORKDIR}/obj
