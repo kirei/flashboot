@@ -225,6 +225,8 @@ COPY ${DESTDIR}/usr/sbin/ndp			usr/sbin/ndp
 COPY ${DESTDIR}/usr/sbin/ntpd			usr/sbin/ntpd
 COPY ${DESTDIR}/usr/sbin/ospfd			usr/sbin/ospfd
 COPY ${DESTDIR}/usr/sbin/ospfctl		usr/sbin/ospfctl
+COPY ${DESTDIR}/usr/sbin/ripd           	usr/sbin/ripd
+COPY ${DESTDIR}/usr/sbin/ripctl         	usr/sbin/ripctl
 #COPY ${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
 COPY ${DESTDIR}/usr/sbin/ppp			usr/sbin/ppp
 COPY ${DESTDIR}/usr/sbin/pppctl			usr/sbin/pppctl
