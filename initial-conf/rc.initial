@@ -277,6 +277,7 @@ fi
 
 if [ X"${ripd_flags}" != X"NO" -a -e /etc/ripd.conf ]; then
         echo -n ' ripd';        ripd ${ripd_flags}
+fi
 
 if [ X"${ospfd_flags}" != X"NO" -a -e /etc/ospfd.conf ]; then
 	echo -n ' ospfd';	ospfd ${ospfd_flags}
