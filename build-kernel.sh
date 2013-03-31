@@ -8,6 +8,7 @@ DISKTAB=disktab.48mb
 NBLKS=98304
 SRCDIR=${BSDSRCDIR:-/usr/src}
 DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
+CONFDIR=${CONFDIR:-initial-conf}
 
 export SRCDIR DESTDIR CWD WORKDIR DISKTAB NBLKS
 
@@ -56,7 +57,8 @@ cp -p ${CWD}/conf ${CWD}/${WORKDIR}/
 cp -p ${CWD}/mtree.conf ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/disktabs ${CWD}/${WORKDIR}/
 cp -pR ${CWD}/tools ${CWD}/${WORKDIR}/
-cp -pR ${CWD}/initial-conf ${CWD}/${WORKDIR}/
+rm -rf ${CWD}/${WORKDIR}/initial-conf
+cp -pR ${CWD}/${CONFDIR} ${CWD}/${WORKDIR}/initial-conf
 rm -r ${CWD}/${WORKDIR}/obj
 mkdir -p ${CWD}/${WORKDIR}/obj
 mkdir -p ${CWD}/obj
