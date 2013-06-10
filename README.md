@@ -1,6 +1,7 @@
 _Please read this entire file before asking for help or reporting bugs_
 
 # Foreword
+
 Flashboot is a system built by Damien Miller and others as an adaptation 
 of OpenBSD that's more suited for small flash-based hardware. 
 For most applications you don't have to compile it on you own, 
@@ -13,8 +14,8 @@ kernel and the userland is untouched but stripped to the minimum to make
 Flashboots fotprint as smal as possible.
 
 Don't turn to OpenBSD mailing list for support since this project is
-unofficial. Please submit bug reports via the mailing list flashboot@mindrot.org or via
-the [GitHub issue tracker](https://github.com/openbsd/flashboot/issues).
+unofficial. Please submit bug reports via the
+[GitHub Issue Tracker](https://github.com/openbsd/flashboot/issues).
 
 # Introduction
 
@@ -161,7 +162,7 @@ save space, only a couple of term{cap,info} entries are transferred (see
 TERMTYPES in the Makefile).
 
 
-# Creating bootable cd
+# Creating Bootable CD
 
 To create an iso image suitable for booting and running flashboot on a x86 PC,
 first read the build instructions above. Step 1 and 2 must be successful and
@@ -186,5 +187,5 @@ size. Finally... burn the iso with your favourite cd burning program.
 
 # Support and bug reporting
 
-Please submit bug reports via the mailing list flashboot@mindrot.org or via
-the [GitHub issue tracker](https://github.com/openbsd/flashboot/issues).
+Please submit bug reports via the
+[GitHub Issue Tracker](https://github.com/openbsd/flashboot/issues).
