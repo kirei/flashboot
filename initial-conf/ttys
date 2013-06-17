@@ -16,7 +16,7 @@ ttyC8	"/usr/libexec/getty std.9600"	vt220	off secure
 ttyC9	"/usr/libexec/getty std.9600"	vt220	off secure
 ttyCa	"/usr/libexec/getty std.9600"	vt220	off secure
 ttyCb	"/usr/libexec/getty std.9600"	vt220	off secure
-tty00	"/usr/libexec/getty std.9600"	unknown off
+tty00	"/usr/libexec/getty std.19200"	unknown on  secure
 tty01	"/usr/libexec/getty std.9600"	unknown off
 tty02	"/usr/libexec/getty std.9600"	unknown off
 tty03	"/usr/libexec/getty std.9600"	unknown off
