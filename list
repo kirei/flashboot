@@ -1,7 +1,7 @@
 # copy the MAKEDEV script and make some devices
 SCRIPT ${DESTDIR}/dev/MAKEDEV			dev/MAKEDEV
 SPECIAL chmod 700 dev/MAKEDEV
-SPECIAL cd dev; ./MAKEDEV ramdisk pty systrace tty00 tty01 pci wdt0 
+SPECIAL cd dev; ./MAKEDEV ramdisk ptm pty systrace tty00 tty01 pci wdt0 
 SPECIAL cd dev; ./MAKEDEV ttyU0 ttyU1
 SPECIAL cd dev; ./MAKEDEV tun0 tun1 tun2 tun3 tun4 tun5 tun6 tun7
 SPECIAL cd dev; ./MAKEDEV bpf0 bpf1 bpf2 bpf3 bpf4 bpf5 bpf6 bpf7 
