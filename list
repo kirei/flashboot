@@ -21,14 +21,15 @@ COPY	${DESTDIR}/etc/shells			etc/shells
 COPY	${DESTDIR}/etc/ksh.kshrc		etc/ksh.kshrc
 COPY	${DESTDIR}/etc/pf.os			etc/pf.os
 COPY	${DESTDIR}/usr/share/zoneinfo/GMT	etc/localtime
-COPY  ${DESTDIR}/var/named/etc/named.conf             var/named/etc/named.conf
-COPY  ${DESTDIR}/var/named/standard/localhost         var/named/standard/localhost
-COPY  ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
-COPY  ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
-COPY  ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
-COPY	${DESTDIR}/etc/mtree/4.4BSD.dist	etc/mtree/4.4BSD.dist
-COPY  ${DESTDIR}/etc/npppd/npppd-users        etc/npppd/npppd-users
-COPY  ${DESTDIR}/etc/npppd/npppd.conf         etc/npppd/npppd.conf
+COPY    ${DESTDIR}/var/named/etc/named.conf             var/named/etc/named.conf
+COPY    ${DESTDIR}/var/named/standard/localhost         var/named/standard/localhost
+COPY    ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
+COPY    ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
+COPY    ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
+COPY	${DESTDIR}/etc/mtree/4.4BSD.dist		etc/mtree/4.4BSD.dist
+COPY    ${DESTDIR}/etc/npppd/npppd-users        	etc/npppd/npppd-users
+COPY    ${DESTDIR}/etc/npppd/npppd.conf         	etc/npppd/npppd.conf
+COPY    ${DESTDIR}/etc/snmpd.conf         		etc/snmpd.conf
 SPECIAL chmod 755 etc/netstart
 SPECIAL touch var/cron/cron.deny
 SPECIAL chown root.crontab var/cron/cron.deny
