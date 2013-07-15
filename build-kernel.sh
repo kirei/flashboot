@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# Builds a 48MB kernel
+# Builds a 64MB kernel
 
 CWD=`pwd`
 WORKDIR=sandbox
-DISKTAB=disktab.48mb
+DISKTAB=disktab.64mb
 NBLKS=98304
 SRCDIR=${BSDSRCDIR:-/usr/src}
 DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
