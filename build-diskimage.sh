@@ -17,12 +17,12 @@ TTYSPEED=${TTYSPEED:-19200}
 # drive geometry information -- get the right one for your flash!!
 
 # 128 MB cards
-#totalsize=250880       # "total sectors:"
-#bytessec=512           # "bytes/sector:"
-#sectorstrack=32        # "sectors/track:"
-#sectorscylinder=256    # "sectors/cylinder:"
-#trackscylinder=8       # "tracks/cylinder:"
-#cylinders=980          # "cylinders:"
+totalsize=250880       # "total sectors:"
+bytessec=512           # "bytes/sector:"
+sectorstrack=32        # "sectors/track:"
+sectorscylinder=256    # "sectors/cylinder:"
+trackscylinder=8       # "tracks/cylinder:"
+cylinders=980          # "cylinders:"
 
 # 256 MB cards
 #totalsize=501760       # "total sectors:"
@@ -33,12 +33,12 @@ TTYSPEED=${TTYSPEED:-19200}
 #cylinders=980          # "cylinders:"
 
 # 489 MB cards
-totalsize=1001952      # "total sectors:"
-bytessec=512		# "bytes/sector:"
-sectorstrack=63	# "sectors/track:"
-sectorscylinder=1008  	# "sectors/cylinder:"
-trackscylinder=16      # "tracks/cylinder:"
-cylinders=994          # "cylinders:"
+#totalsize=1001952      # "total sectors:"
+#bytessec=512		# "bytes/sector:"
+#sectorstrack=63	# "sectors/track:"
+#sectorscylinder=1008  	# "sectors/cylinder:"
+#trackscylinder=16      # "tracks/cylinder:"
+#cylinders=994          # "cylinders:"
 
 
 # Don't start without a imagefile as a parameter
