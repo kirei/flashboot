@@ -174,7 +174,6 @@ wd*	at pciide? channel ? drive ? flags 0x0000
 
 vr*	at pci?				# VIA Rhine ethernet
 em*     at pci?                         # Intel Pro/1000 ethernet
-gcu*    at pci?                         # Intel Pro/1000 ethernet GCU
 bge*    at pci?                         # Broadcom BCM57xx (aka Tigon3)
 bnx*    at pci?                         # Broadcom BCM5706/5708 GigE
 ukphy*	at mii?				# "unknown" PHYs
