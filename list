@@ -116,7 +116,6 @@ COPY ${DESTDIR}/usr/sbin/groupmod		/usr/sbin/groupmod
 COPY ${DESTDIR}/usr/sbin/npppd    usr/sbin/npppd
 COPY ${DESTDIR}/usr/sbin/npppctl  usr/sbin/npppctl
 COPY ${DESTDIR}/usr/bin/ldd			usr/bin/ldd
-COPY ${DESTDIR}/usr/bin/sudo			usr/bin/sudo
 COPY ${DESTDIR}/sbin/mount_msdos		sbin/mount_msdos
 COPY ${DESTDIR}/sbin/kbd			sbin/kbd
 COPY ${DESTDIR}/bin/cat				bin/cat
