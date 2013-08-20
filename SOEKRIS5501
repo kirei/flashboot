@@ -173,14 +173,18 @@ wd*	at wdc? channel ? drive ? flags 0x0000
 wd*	at pciide? channel ? drive ? flags 0x0000
 
 vr*	at pci?				# VIA Rhine ethernet
+em*     at pci?                         # Intel Pro/1000 ethernet
+gcu*    at pci?                         # Intel Pro/1000 ethernet GCU
+bge*    at pci?                         # Broadcom BCM57xx (aka Tigon3)
+bnx*    at pci?                         # Broadcom BCM5706/5708 GigE
 ukphy*	at mii?				# "unknown" PHYs
 
 # Wireless network cards
-ath*	at pci?				# Atheros AR5k (802.11a/b/g)
-wi*	at pci?				# WaveLAN IEEE 802.11DS
-ral*	at pci?				# Ralink RT2500
-ipw*	at pci?				# Intel PRO/Wireless 2100
-iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
+# ath*	at pci?				# Atheros AR5k (802.11a/b/g)
+# wi*	at pci?				# WaveLAN IEEE 802.11DS
+# ral*	at pci?				# Ralink RT2500
+# ipw*	at pci?				# Intel PRO/Wireless 2100
+# iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
 
 san*	at pci?				# Sangoma PCI AFT card
 
