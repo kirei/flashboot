@@ -4,7 +4,7 @@
 
 CWD=`pwd`
 WORKDIR=sandbox
-DISKTAB=disktab.64mb
+DISKTAB=disktab.48mb
 NBLKS=98304
 SRCDIR=${BSDSRCDIR:-/usr/src}
 DESTDIR=${DESTDIR:-${CWD}/${WORKDIR}}
