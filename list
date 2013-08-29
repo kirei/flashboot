@@ -21,14 +21,15 @@ COPY	${DESTDIR}/etc/shells			etc/shells
 COPY	${DESTDIR}/etc/ksh.kshrc		etc/ksh.kshrc
 COPY	${DESTDIR}/etc/pf.os			etc/pf.os
 COPY	${DESTDIR}/usr/share/zoneinfo/GMT	etc/localtime
-COPY  ${DESTDIR}/var/named/etc/named.conf             var/named/etc/named.conf
-COPY  ${DESTDIR}/var/named/standard/localhost         var/named/standard/localhost
-COPY  ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
-COPY  ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
-COPY  ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
-COPY	${DESTDIR}/etc/mtree/4.4BSD.dist	etc/mtree/4.4BSD.dist
-COPY  ${DESTDIR}/etc/npppd/npppd-users        etc/npppd/npppd-users
-COPY  ${DESTDIR}/etc/npppd/npppd.conf         etc/npppd/npppd.conf
+COPY    ${DESTDIR}/var/named/etc/named.conf             var/named/etc/named.conf
+COPY    ${DESTDIR}/var/named/standard/localhost         var/named/standard/localhost
+COPY    ${DESTDIR}/var/named/standard/loopback          var/named/standard/loopback
+COPY    ${DESTDIR}/var/named/standard/loopback6.arpa    var/named/standard/loopback6.arpa
+COPY    ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
+COPY	${DESTDIR}/etc/mtree/4.4BSD.dist		etc/mtree/4.4BSD.dist
+COPY    ${DESTDIR}/etc/npppd/npppd-users        	etc/npppd/npppd-users
+COPY    ${DESTDIR}/etc/npppd/npppd.conf         	etc/npppd/npppd.conf
+COPY    ${DESTDIR}/etc/snmpd.conf         		etc/snmpd.conf
 SPECIAL chmod 755 etc/netstart
 SPECIAL touch var/cron/cron.deny
 SPECIAL chown root.crontab var/cron/cron.deny
@@ -103,6 +104,15 @@ COPY ${DESTDIR}/usr/sbin/named			usr/sbin/named
 COPY ${DESTDIR}/usr/sbin/rndc			usr/sbin/rndc
 COPY ${DESTDIR}/usr/sbin/rndc-confgen		usr/sbin/rndc-confgen
 COPY ${DESTDIR}/usr/sbin/dig			usr/sbin/dig
+COPY ${DESTDIR}/usr/sbin/useradd		/usr/sbin/useradd
+COPY ${DESTDIR}/usr/sbin/userdel		/usr/sbin/userdel
+COPY ${DESTDIR}/usr/sbin/userinfo		/usr/sbin/userinfo
+COPY ${DESTDIR}/usr/sbin/usermod		/usr/sbin/usermod
+COPY ${DESTDIR}/usr/sbin/adduser		/usr/sbin/adduser
+COPY ${DESTDIR}/usr/sbin/groupadd		/usr/sbin/groupadd
+COPY ${DESTDIR}/usr/sbin/groupinfo		/usr/sbin/groupinfo
+COPY ${DESTDIR}/usr/sbin/groupdel		/usr/sbin/groupdel
+COPY ${DESTDIR}/usr/sbin/groupmod		/usr/sbin/groupmod
 COPY ${DESTDIR}/usr/sbin/npppd    usr/sbin/npppd
 COPY ${DESTDIR}/usr/sbin/npppctl  usr/sbin/npppctl
 COPY ${DESTDIR}/usr/bin/ldd			usr/bin/ldd

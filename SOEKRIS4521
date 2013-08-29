@@ -93,7 +93,7 @@ config		bsd		root on rd0a swap on rd0b and wd0b and wd1b
 pseudo-device	rd	1
 
 # No swap, so crank this down
-option		BUFCACHEPERCENT=1
+option		BUFCACHEPERCENT=5
 
 mainbus0 at root
 

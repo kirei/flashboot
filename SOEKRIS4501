@@ -57,11 +57,12 @@ pseudo-device	 carp		# CARP protocol support
 pseudo-device	 gif		# IPv[46] over IPv[46] tunnel (RFC1933)
 pseudo-device	 gre		# GRE encapsulation interface
 pseudo-device	 loop		# network loopback
-#pseudo-device	 ppp		# PPP
+pseudo-device	 ppp		# PPP
 #pseudo-device	 sl		# CSLIP
 pseudo-device	 tun		# network tunneling over tty
 pseudo-device	 vlan		# IEEE 802.1Q VLAN
 pseudo-device	 trunk		# Trunking support
+pseudo-device    vether         # Virtual Ethernet interface
 
 # for IPv6
 #pseudo-device	faith	1	# IPv[46] tcp relay translation i/f
@@ -80,7 +81,7 @@ option		DUMMY_NOPS	# speed hack; recommended
 
 maxusers	32		# estimated number of users
 
-option		RAMDISK_HOOKS
+option          RAMDISK_HOOKS
 #option		MINIROOTSIZE=16384		# disktab.8mb
 #option		MINIROOTSIZE=19456		# disktab.9.5mb
 #option		MINIROOTSIZE=20480		# disktab.10mb
@@ -89,14 +90,11 @@ option		MINIROOTSIZE=98304		# disktab.48mb
 #option   MINIROOTSIZE=131072   # disktab.64mb
 option		NKPTP=16 				# Needed when kernel+ramdisk > 16Mb
 
-config          bsd     root on rd0a swap on rd0b and wd0b and wd1b
-pseudo-device   rd              1
-
-# Whacky timer
-option		TIMER_FREQ=1189161
+config		bsd		root on rd0a swap on rd0b and wd0b and wd1b
+pseudo-device	rd	1
 
 # No swap, so crank this down
-option		BUFCACHEPERCENT=1
+option		BUFCACHEPERCENT=5
 
 mainbus0 at root
 
@@ -110,21 +108,32 @@ pcibios0	at bios0 flags 0x0000  # use 0x30 for a total verbose
 #ipmi0		at mainbus? disable     # IPMI
 
 isa0	at mainbus0
-isa0	at pcib?
 pci*	at mainbus0
 
 option		PCIVERBOSE
 option		EISAVERBOSE
-
-pchb*	at pci?			# PCI-Host bridges
-pci*	at pchb?
-pcib*	at pci?			# PCI-ISA bridge
-ppb*	at pci? 		# PCI-PCI bridges
-pci*	at ppb? bus ?
+option		USBVERBOSE
 
 # power management and other environmental stuff
 elansc*	at pci?			# AMD Elan SC520 System Controller
 gpio*	at elansc?
+
+# CardBus bus support
+cardbus*	at cardslot?
+pcmcia*		at cardslot?
+cbb*		at pci?
+cardslot*	at cbb?
+
+# USB Controllers
+ohci*	at cardbus?			# Open Host Controller
+
+# USB bus support
+usb*	at ohci?
+
+# USB devices
+uhub*	at usb?			# USB Hubs
+umsm*	at uhub?		# Qualcomm MSM EVDO
+ucom*	at umsm?
 
 npx0	at isa? port 0xf0 irq 13	# math coprocessor
 
@@ -135,29 +144,22 @@ option	WSDISPLAY_COMPAT_PCVT		# emulate some ioctls
 
 pckbc0		at isa? flags 0x00	# PC keyboard controller
 pckbd*		at pckbc?		# PC keyboard
-#pms*		at pckbc?		# PS/2 mouse for wsmouse
 vga*		at pci?
 wsdisplay*	at vga? console ?
 wskbd*		at pckbd? mux 1
 
 com0	at isa? port 0x3f8 irq 4	# standard PC serial ports
 com1	at isa? port 0x2f8 irq 3
+com2	at isa? port 0x3e8 irq 5
+com*	at pcmcia?			# PCMCIA modems/serial ports
+#com*	at cardbus?
 
 wdc0	at isa? port 0x1f0 irq 14 flags 0x00
 wd*	at wdc? channel ? drive ? flags 0x0000
 
 sis*	at pci?					# SiS 900/7016 ethernet
+
 nsphyter*	at mii?				# NS and compatible PHYs
-
-# Wireless network cards
-ath*	at pci?				# Atheros AR5k (802.11a/b/g)
-wi*	at pci?				# WaveLAN IEEE 802.11DS
-ral*	at pci?				# Ralink RT2500
-ipw*	at pci?				# Intel PRO/Wireless 2100
-iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
-
-# crypto support
-hifn*	at pci?			# Hi/fn 7751 crypto card
 
 pseudo-device	bio		1	# ioctl multiplexing device
 pseudo-device	wsmux		2

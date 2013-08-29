@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Builds a 48MB kernel
+# Builds a 64MB kernel
 
 CWD=`pwd`
 WORKDIR=sandbox

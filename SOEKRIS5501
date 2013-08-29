@@ -36,6 +36,7 @@ option		INET		# IP + ICMP + TCP + UDP
 option		ALTQ		# ALTQ base
 option		INET6		# IPv6 (needs INET)
 option		IPSEC		# IPsec
+option          PIPEX           # Pppac IP EXtension, for npppd
 option		PPP_BSDCOMP	# PPP BSD compression
 option		PPP_DEFLATE
 option		MROUTING	# Multicast router
@@ -46,6 +47,7 @@ pseudo-device	pflog		# pf log if
 pseudo-device	pfsync		# pf sync if
 pseudo-device	pflow		# pflow export if
 pseudo-device	enc	1	# option IPSEC needs the encapsulation interface
+pseudo-device	vether		# virtual Ethernet interface
 
 pseudo-device	pty	16	# pseudo-terminals
 pseudo-device	systrace 1	# system call tracing device
@@ -60,6 +62,7 @@ pseudo-device	 loop		# network loopback
 #pseudo-device	 ppp		# PPP
 #pseudo-device	 sl		# CSLIP
 pseudo-device	 tun		# network tunneling over tty
+pseudo-device	 pppx		# npppd 
 pseudo-device	 vlan		# IEEE 802.1Q VLAN
 pseudo-device	 trunk		# Trunking support
 
@@ -170,14 +173,17 @@ wd*	at wdc? channel ? drive ? flags 0x0000
 wd*	at pciide? channel ? drive ? flags 0x0000
 
 vr*	at pci?				# VIA Rhine ethernet
+em*     at pci?                         # Intel Pro/1000 ethernet
+bge*    at pci?                         # Broadcom BCM57xx (aka Tigon3)
+bnx*    at pci?                         # Broadcom BCM5706/5708 GigE
 ukphy*	at mii?				# "unknown" PHYs
 
 # Wireless network cards
-ath*	at pci?				# Atheros AR5k (802.11a/b/g)
-wi*	at pci?				# WaveLAN IEEE 802.11DS
-ral*	at pci?				# Ralink RT2500
-ipw*	at pci?				# Intel PRO/Wireless 2100
-iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
+# ath*	at pci?				# Atheros AR5k (802.11a/b/g)
+# wi*	at pci?				# WaveLAN IEEE 802.11DS
+# ral*	at pci?				# Ralink RT2500
+# ipw*	at pci?				# Intel PRO/Wireless 2100
+# iwi*	at pci?				# Intel PRO/Wireless 2200BG/2915ABG
 
 san*	at pci?				# Sangoma PCI AFT card
 
