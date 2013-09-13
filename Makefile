@@ -33,7 +33,7 @@ NEWFSARGS=	-m 0 -o space
 KOPTS=		#-Os
 
 TERMTYPES=	dumb unknown vt100 vt100-nav vt220 xterm xterm-new \
-		xterm-xfree86 cygwin gnome vt102 ansi
+		xterm-xfree86 cygwin gnome vt102 ansi screen
 
 .PATH:		${.CURDIR}
 TOP=		${.CURDIR}
