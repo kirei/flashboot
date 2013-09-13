@@ -10,7 +10,7 @@ if [ X"${usrlocal_size}" != X"NO" ]; then
 
 	echo "Unpacking packages..."
 	cd /usr/local
-	for pkg in /flash/pkg/*.tgz ; do
+	for pkg in /flash/pkg/${osrelease:-unknown}/*.tgz /flash/pkg/*.tgz ; do
 		if [ -r $pkg ]; then
 			echo -n "Unpacking package ${pkg} from flash... "
 			cpio -idz -H tar -f \
