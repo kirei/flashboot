@@ -281,6 +281,7 @@ atu*	at uhub?		# Atmel AT76c50x based 802.11b
 axe*	at uhub?		# ASIX Electronics AX88172 USB Ethernet
 cue*	at uhub?		# CATC USB-EL1201A based Ethernet
 kue*	at uhub?		# Kawasaki KL5KUSB101B based Ethernet
+smsc*	at uhub?		# SMSC LAN95xx Ethernet
 cdce*	at uhub?		# CDC Ethernet
 urndis*	at uhub?		# Remote NDIS Ethernet
 upl*	at uhub?		# Prolific PL2301/PL2302 host-to-host `network'
@@ -325,6 +326,8 @@ puc*	at pci?			# PCI "universal" communication device
 
 sdhc*	at pci?			# SD Host Controller
 sdmmc*	at sdhc?		# SD/MMC bus
+rtsx*	at pci?			# Realtek SD Card Reader
+sdmmc*	at rtsx?		# SD/MMC bus
 
 # Bluetooth controllers
 #sbt*	at sdmmc? disable	# SDIO Bluetooth
@@ -449,6 +452,7 @@ twe*	at pci?			# 3ware Escalade RAID controllers
 #aac*	at pci?			# Adaptec FSA RAID controllers
 ami*	at pci?			# AMI MegaRAID controllers
 mfi*	at pci?			# LSI MegaRAID SAS controllers
+mfii*	at pci?			# LSI MegaRAID SAS Fusion controllers
 cac*	at pci?			# Compaq Smart ARRAY [234]* RAID controllers
 cac*	at eisa?
 ciss*	at pci?			# Compaq Smart ARRAY [56]* RAID controllers
@@ -568,6 +572,7 @@ gcu*	at pci?				# Intel Pro/1000 ethernet GCU
 ixgb*	at pci?				# Intel Pro/10Gb ethernet
 ix*	at pci?				# Intel 82598EB 10Gb ethernet
 myx*	at pci?				# Myricom Myri-10G 10Gb ethernet
+oce*	at pci?				# Emulex OneConnect 10Gb ethernet
 txp*	at pci?				# 3com 3CR990
 nge*	at pci?				# NS DP83820/DP83821 GigE
 bge*	at pci?				# Broadcom BCM57xx (aka Tigon3)
@@ -788,10 +793,15 @@ owctr*	at onewire?		# Counter device
 pseudo-device	pctr		1
 pseudo-device	mtrr		1	# Memory range attributes control
 pseudo-device	nvram		1
-pseudo-device	sequencer	1
-#pseudo-device	raid		4	# RAIDframe disk driver
 pseudo-device	hotplug		1	# devices hot plugging
 
 # mouse & keyboard multiplexor pseudo-devices
 pseudo-device	wsmux		2
 pseudo-device	crypto		1
+
+# Virtio devices
+virtio*	at pci?			# Virtio PCI device
+vioblk*	at virtio?		# Virtio block device
+vio*	at virtio?		# Virtio network device
+viomb*	at virtio?		# Virtio memory ballooning device
+
