@@ -104,10 +104,12 @@ if [ X"${initial_config}" = X"YES" ] ; then
 	echo "Running createconfig";	createconfig
 fi
 
+osrelease=`sysctl -n kern.osrelease`
+
 # Mount /flash rw for now so we can write later if needed;
 # will remount with fstab settings at the end.
 if mount -o rw,sync,noatime /flash >/dev/null 2>&1 ; then
-	for x in /flash/*.tgz ; do 
+	for x in /flash/${osrelease:-unknown}/*.tgz /flash/*.tgz ; do 
 		if [ -r $x ]; then
 			echo -n "Unpacking tarball ${x} from flash... "
 			if ! tar zxpf $x ; then

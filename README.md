@@ -117,21 +117,25 @@ upgrade.
 
 # Customisation
 
-The system support customisation in three different ways.
+The system supports customisation in three different ways.
 
-1. Any file that you add to the root of the flash-card (/flash) that has the
-tgz-extension is automatically extracted to the ramdisk during boot. This is
-useful for small extensions or configuration that you can distribute in a
-single tgz-package. Files can also be added to the /flash/conf directory, they
-are then automatically copied (not extracted) to the ramdisk during boot.
+1. Any *.tgz file that you add to the root of the flash-card (/flash) or
+the release-dependent subdirectory (e.g.  /flash/5.3 for a 5.3 kernel) is
+automatically extracted to the ramdisk during boot. This is useful for small
+extensions or configuration that you can distribute in a single tgz-package.
+Files can also be added to the /flash/conf directory, they are then
+automatically copied (not extracted) to the respective location in the
+ramdisk during boot, e.g. /flash/conf/etc/myname will end up as /etc/myname
+when the system has booted.
 
 2. There is also an option in rc.conf to create a second ramdisk in
 /usr/local. By default this is not done at all to save memory on the device.
-If activated this will also extract any files located in /flash/pkg/ ending
-with the tgz-extension to /usr/local. This provides an excellent way to add
-packages directly from the OpenBSD ftp-server without needing to expand the
-original ramdisk. The rc-script will even remove some unnecessary files from
-the packages such as man-pages and files needed only for compiling.
+If activated this will also extract any *.tgz files located in /flash/pkg and
+the release-dependent subdirectory (e.g. /flash/pkg/5.3 for a 5.3 kernel)
+to /usr/local. This provides an excellent way to add packages directly from the
+OpenBSD ftp-server without needing to expand the original ramdisk. The
+rc-script will even remove some unnecessary files from the packages such as
+man-pages and files needed only for compiling.
 
 3. Recompile a kernel that suits your needs and that includes or excludes the
 binaries and libs that you need for your application. Change the list to
