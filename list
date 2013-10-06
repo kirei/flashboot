@@ -152,6 +152,7 @@ COPY ${DESTDIR}/sbin/dmesg			sbin/dmesg
 COPY ${DESTDIR}/sbin/fsck			sbin/fsck
 COPY ${DESTDIR}/sbin/fsck_ffs			sbin/fsck_ffs
 COPY ${DESTDIR}/sbin/ifconfig			sbin/ifconfig
+COPY ${DESTDIR}/sbin/iked			sbin/iked
 COPY ${DESTDIR}/sbin/init			sbin/init
 COPY ${DESTDIR}/sbin/ipsecctl			sbin/ipsecctl
 COPY ${DESTDIR}/sbin/isakmpd			sbin/isakmpd
@@ -168,11 +169,11 @@ COPY ${DESTDIR}/sbin/route			sbin/route
 COPY ${DESTDIR}/sbin/sysctl			sbin/sysctl
 COPY ${DESTDIR}/sbin/ttyflags			sbin/ttyflags
 COPY ${DESTDIR}/sbin/umount			sbin/umount
-#COPY ${DESTDIR}/sbin/wicontrol			sbin/wicontrol
 COPY ${DESTDIR}/usr/bin/awk			usr/bin/awk
 COPY ${DESTDIR}/usr/bin/basename		usr/bin/basename
 COPY ${DESTDIR}/usr/bin/crontab			usr/bin/crontab
 COPY ${DESTDIR}/usr/bin/diff			usr/bin/diff
+COPY ${DESTDIR}/usr/bin/dirname			usr/bin/dirname
 COPY ${DESTDIR}/usr/bin/cut			usr/bin/cut
 COPY ${DESTDIR}/usr/bin/du			usr/bin/du
 COPY ${DESTDIR}/usr/bin/env			usr/bin/env
@@ -202,6 +203,7 @@ COPY ${DESTDIR}/usr/bin/su			usr/bin/su
 COPY ${DESTDIR}/usr/bin/systat			usr/bin/systat
 COPY ${DESTDIR}/usr/bin/tail			usr/bin/tail
 COPY ${DESTDIR}/usr/bin/tip			usr/bin/tip
+COPY ${DESTDIR}/usr/bin/tmux			usr/bin/tmux
 COPY ${DESTDIR}/usr/bin/top			usr/bin/top
 COPY ${DESTDIR}/usr/bin/touch			usr/bin/touch
 COPY ${DESTDIR}/usr/bin/tput			usr/bin/tput
@@ -231,14 +233,20 @@ COPY ${DESTDIR}/usr/sbin/dhcrelay		usr/sbin/dhcrelay
 COPY ${DESTDIR}/usr/sbin/ftp-proxy		usr/sbin/ftp-proxy
 COPY ${DESTDIR}/usr/sbin/gpioctl		usr/sbin/gpioctl
 COPY ${DESTDIR}/usr/sbin/hostapd		usr/sbin/hostapd
+COPY ${DESTDIR}/usr/sbin/ikectl			usr/sbin/ikectl
 COPY ${DESTDIR}/usr/sbin/inetd			usr/sbin/inetd
+COPY ${DESTDIR}/usr/sbin/ifstated		usr/sbin/ifstated
 #COPY ${DESTDIR}/usr/sbin/kvm_mkdb		usr/sbin/kvm_mkdb
 COPY ${DESTDIR}/usr/sbin/mtree			usr/sbin/mtree
 #COPY ${DESTDIR}/usr/sbin/named			usr/sbin/named
 COPY ${DESTDIR}/usr/sbin/ndp			usr/sbin/ndp
 COPY ${DESTDIR}/usr/sbin/ntpd			usr/sbin/ntpd
+COPY ${DESTDIR}/usr/sbin/npppd			usr/sbin/npppd
+COPY ${DESTDIR}/usr/sbin/npppctl		usr/sbin/npppctl
 COPY ${DESTDIR}/usr/sbin/ospfd			usr/sbin/ospfd
 COPY ${DESTDIR}/usr/sbin/ospfctl		usr/sbin/ospfctl
+COPY ${DESTDIR}/usr/sbin/relayd           	usr/sbin/relayd
+COPY ${DESTDIR}/usr/sbin/relayctl           	usr/sbin/relayctl
 COPY ${DESTDIR}/usr/sbin/ripd           	usr/sbin/ripd
 COPY ${DESTDIR}/usr/sbin/ripctl         	usr/sbin/ripctl
 #COPY ${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
@@ -260,6 +268,7 @@ COPY ${DESTDIR}/usr/sbin/syslogd		usr/sbin/syslogd
 COPY ${DESTDIR}/usr/sbin/tcpdrop		usr/sbin/tcpdrop
 COPY ${DESTDIR}/usr/sbin/tcpdump		usr/sbin/tcpdump
 COPY ${DESTDIR}/usr/sbin/tftpd			usr/sbin/tftpd
+COPY ${DESTDIR}/usr/sbin/tftp-proxy		usr/sbin/tftp-proxy
 COPY ${DESTDIR}/usr/sbin/traceroute		usr/sbin/traceroute
 COPY ${DESTDIR}/usr/sbin/traceroute6		usr/sbin/traceroute6
 COPY ${DESTDIR}/usr/sbin/watchdogd		usr/sbin/watchdogd

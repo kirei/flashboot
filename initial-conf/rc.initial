@@ -251,6 +251,10 @@ if ifconfig lo0 inet6 >/dev/null 2>&1; then
 	fi
 fi
 
+if [ X"${npppd_flags}" != X"NO" ]; then
+	echo -n ' npppd';	/usr/sbin/npppd ${npppd_flags}
+fi
+
 if [ X"${hostapd_flags}" != X"NO" ]; then
 	echo -n ' hostapd';	/usr/sbin/hostapd ${hostapd_flags}
 fi
@@ -265,8 +269,16 @@ if [ X"${spamd_flags}" != X"NO" ]; then
 	/usr/libexec/spamd-setup -D
 fi
 
+if [ X"${ifstated_flags}" != X"NO" -a -f /etc/ifstated.conf ]; then
+	echo -n ' ifstated';		/usr/sbin/ifstated ${ifstated_flags}
+fi
+
 if [ X"${ftpproxy_flags}" != X"NO" ]; then
 	echo -n ' ftp-proxy';		/usr/sbin/ftp-proxy ${ftpproxy_flags}
+fi
+
+if [ X"${tftpproxy_flags}" != X"NO" ]; then
+	echo -n ' tftp-proxy';		/usr/sbin/tftp-proxy ${tftpproxy_flags}
 fi
 
 if [ X"${identd_flags}" != X"NO" ]; then
@@ -287,6 +299,10 @@ fi
 
 if [ X"${bgpd_flags}" != X"NO" -a -e /etc/bgpd.conf ]; then
 	echo -n ' bgpd';	bgpd ${bgpd_flags}
+fi
+
+if [ X"${relayd_flags}" != X"NO" -a -f /etc/relayd.conf ]; then
+	echo -n ' relayd';	relayd ${relayd_flags}
 fi
 
 if [ X"${named_flags}" != X"NO" ]; then
@@ -311,11 +327,17 @@ if [ X"${named_flags}" != X"NO" ]; then
 fi
 
 if [ X"${sasyncd_flags}" != X"NO" ]; then
-	echo 'starting sasyncd';	sasyncd ${sasyncd_flags}
+	echo -n ' sasyncd';	sasyncd ${sasyncd_flags}
 fi
 
 if [ X"${isakmpd_flags}" != X"NO" ]; then
+	[ X"${sasyncd_flags}" != X"NO" ] && isakmpd_flags="-S ${isakmpd_flags}"
 	echo -n ' isakmpd';	isakmpd ${isakmpd_flags}
+fi
+
+if [ X"${iked_flags}" != X"NO" -a -f /etc/iked.conf ]; then
+	[ X"${sasyncd_flags}" != X"NO" ] && iked_flags="-S ${iked_flags}"
+	echo -n ' iked';	iked ${iked_flags}
 fi
 
 if [ X"${ipsec}" != X"NO" -a -f /etc/ipsec.conf ]; then
@@ -323,11 +345,11 @@ if [ X"${ipsec}" != X"NO" -a -f /etc/ipsec.conf ]; then
 fi
 
 if [ X"${ldattach_flags}" != X"NO" -a -n "${ldattach_flags}" ]; then
-	echo -n ' ldattach'; ldattach ${ldattach_flags}
+	echo -n ' ldattach'; 	ldattach ${ldattach_flags}
 fi
 
 if [ X"${ntpd_flags}" != X"NO" ]; then
-	echo -n ' ntpd'; ntpd $ntpd_flags
+	echo -n ' ntpd'; 	ntpd $ntpd_flags
 fi
 
 if [ X"${sshd_flags}" != X"NO" ]; then
