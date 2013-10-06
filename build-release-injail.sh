@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export BUILDCONF=/mk-mini.conf
+export MAKECONF=/mk-mini.conf
 
 cd /usr/src
 
