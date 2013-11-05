@@ -6,6 +6,10 @@ cd /usr/src
 
 echo "Patching src.."
 for file in /patches/*.patch; do
+  if [ `egrep -c '^RCS file: /cvs/OpenBSD/xenocara' $file` -ge 1 ]; then
+	echo "skipping xenocara patch $file"
+	continue;
+  fi
   echo "patching ${file} to ${WORKDIR}/usr/src"
   patch -p0 < ${file}
 done
