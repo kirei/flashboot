@@ -1,3 +1,6 @@
+N.B.: This changelog is not actively maintained.
+
+
 20111023
  - (jryberg) Added build-usbinstallimage.sh - Builds bootable pendrive (USB)
              image for installation CD
