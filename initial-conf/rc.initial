@@ -282,7 +282,7 @@ if [ X"${tftpproxy_flags}" != X"NO" ]; then
 fi
 
 if [ X"${identd_flags}" != X"NO" ]; then
-	echo -n ' identd';	/usr/libexec/identd ${identd_flags}
+	echo -n ' identd';	/usr/sbin/identd ${identd_flags}
 fi
 
 if [ X"${inetd}" != X"NO" -a -e /etc/inetd.conf ]; then

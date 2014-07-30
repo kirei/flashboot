@@ -113,8 +113,9 @@ COPY ${DESTDIR}/usr/sbin/groupadd		/usr/sbin/groupadd
 COPY ${DESTDIR}/usr/sbin/groupinfo		/usr/sbin/groupinfo
 COPY ${DESTDIR}/usr/sbin/groupdel		/usr/sbin/groupdel
 COPY ${DESTDIR}/usr/sbin/groupmod		/usr/sbin/groupmod
-COPY ${DESTDIR}/usr/sbin/npppd    usr/sbin/npppd
-COPY ${DESTDIR}/usr/sbin/npppctl  usr/sbin/npppctl
+COPY ${DESTDIR}/usr/sbin/npppd			usr/sbin/npppd
+COPY ${DESTDIR}/usr/sbin/npppctl		usr/sbin/npppctl
+COPY ${DESTDIR}/usr/sbin/identd			usr/sbin/identd
 COPY ${DESTDIR}/usr/bin/ldd			usr/bin/ldd
 COPY ${DESTDIR}/sbin/mount_msdos		sbin/mount_msdos
 COPY ${DESTDIR}/sbin/kbd			sbin/kbd
@@ -216,7 +217,6 @@ COPY ${DESTDIR}/usr/bin/vi			usr/bin/vi
 COPY ${DESTDIR}/usr/bin/vmstat			usr/bin/vmstat
 COPY ${DESTDIR}/usr/libexec/auth/login_passwd	usr/libexec/auth/login_passwd
 COPY ${DESTDIR}/usr/libexec/getty		usr/libexec/getty
-COPY ${DESTDIR}/usr/libexec/identd		usr/libexec/identd
 COPY ${DESTDIR}/usr/libexec/ld.so		usr/libexec/ld.so
 COPY ${DESTDIR}/usr/libexec/sftp-server		usr/libexec/sftp-server
 COPY ${DESTDIR}/usr/libexec/spamd		usr/libexec/spamd
