@@ -297,6 +297,10 @@ if [ X"${ospfd_flags}" != X"NO" -a -e /etc/ospfd.conf ]; then
 	echo -n ' ospfd';	ospfd ${ospfd_flags}
 fi
 
+if [ X"${ospf6d_flags}" != X"NO" -a -e /etc/ospf6d.conf ]; then
+	echo -n ' ospf6d';	ospf6d ${ospf6d_flags}
+fi
+
 if [ X"${bgpd_flags}" != X"NO" -a -e /etc/bgpd.conf ]; then
 	echo -n ' bgpd';	bgpd ${bgpd_flags}
 fi

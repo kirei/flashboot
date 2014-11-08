@@ -13,7 +13,7 @@ SPECIAL cd dev; ./MAKEDEV arandom
 COPY	${DESTDIR}/etc/disktab			etc/disktab
 COPY	${DESTDIR}/etc/login.conf		etc/login.conf
 COPY	${DESTDIR}/etc/gettytab			etc/gettytab
-COPY	${DESTDIR}/etc/remote			etc/remote
+COPY	${DESTDIR}/etc/examples/remote		etc/remote
 COPY	${DESTDIR}/etc/netstart			etc/netstart
 COPY	${DESTDIR}/etc/services			etc/services
 COPY	${DESTDIR}/etc/protocols		etc/protocols
@@ -29,7 +29,7 @@ COPY    ${DESTDIR}/var/named/etc/root.hint              var/named/etc/root.hint
 COPY	${DESTDIR}/etc/mtree/4.4BSD.dist		etc/mtree/4.4BSD.dist
 COPY    ${DESTDIR}/etc/npppd/npppd-users        	etc/npppd/npppd-users
 COPY    ${DESTDIR}/etc/npppd/npppd.conf         	etc/npppd/npppd.conf
-COPY    ${DESTDIR}/etc/snmpd.conf         		etc/snmpd.conf
+COPY    ${DESTDIR}/etc/examples/snmpd.conf         	etc/snmpd.conf
 SPECIAL chmod 755 etc/netstart
 SPECIAL touch var/cron/cron.deny
 SPECIAL chown root.crontab var/cron/cron.deny
@@ -250,9 +250,6 @@ COPY ${DESTDIR}/usr/sbin/relayctl           	usr/sbin/relayctl
 COPY ${DESTDIR}/usr/sbin/ripd           	usr/sbin/ripd
 COPY ${DESTDIR}/usr/sbin/ripctl         	usr/sbin/ripctl
 #COPY ${DESTDIR}/usr/sbin/portmap		usr/sbin/portmap
-COPY ${DESTDIR}/usr/sbin/ppp			usr/sbin/ppp
-COPY ${DESTDIR}/usr/sbin/pppctl			usr/sbin/pppctl
-COPY ${DESTDIR}/usr/sbin/pppoe			usr/sbin/pppoe
 COPY ${DESTDIR}/usr/sbin/pwd_mkdb		usr/sbin/pwd_mkdb
 #COPY ${DESTDIR}/usr/sbin/rarpd			usr/sbin/rarpd
 COPY ${DESTDIR}/usr/sbin/rdate			usr/sbin/rdate
@@ -302,6 +299,9 @@ SPECIAL ln usr/bin/tset usr/bin/reset
 SPECIAL ln usr/bin/uptime usr/bin/w
 SPECIAL ln usr/bin/vi usr/bin/ex
 
+# rc.d
+COPY	${DESTDIR}/etc/rc.d/*		etc/rc.d/
+
 # We don't need the full mtree hierarchy
 # Use find and rmdir so we don't accidentally delete files that are there
 SPECIAL find -d ./var/games -type d -exec rmdir {} \; >/dev/null 2>&1
@@ -337,8 +337,6 @@ SPECIAL chmod 4755		usr/bin/passwd
 SPECIAL chmod 4755		usr/bin/su
 SPECIAL chown root.authpf	usr/sbin/authpf
 SPECIAL chmod 6555		usr/sbin/authpf
-SPECIAL chown root.network	usr/sbin/ppp
-SPECIAL chmod 4750		usr/sbin/ppp
 SPECIAL chmod 4755		usr/sbin/traceroute
 SPECIAL chmod 4755		usr/sbin/traceroute6
 
