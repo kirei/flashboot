@@ -15,7 +15,7 @@ Flashboots fotprint as smal as possible.
 
 Don't turn to OpenBSD mailing list for support since this project is
 unofficial. Please submit bug reports via the
-[GitHub Issue Tracker](https://github.com/openbsd/flashboot/issues).
+[GitHub Issue Tracker](https://github.com/kirei/flashboot/issues).
 
 # Introduction
 
@@ -192,4 +192,4 @@ size. Finally... burn the iso with your favourite cd burning program.
 # Support and bug reporting
 
 Please submit bug reports via the
-[GitHub Issue Tracker](https://github.com/openbsd/flashboot/issues).
+[GitHub Issue Tracker](https://github.com/kirei/flashboot/issues).
